@@ -39,7 +39,6 @@ VirtuBuild is a modern web application that provides virtual building and constr
 ### Infrastructure
 - **Containerization**: Docker & Docker Compose
 - **Database Management**: pgAdmin 4
-- **Process Management**: Makefile commands
 - **Environment Management**: Environment-specific configuration files
 
 ## 📁 Project Structure
@@ -71,7 +70,6 @@ VirtuBuild/
 ├── init-scripts/                  # Database initialization scripts
 ├── docker-compose.yml             # Docker services configuration
 ├── Dockerfile                     # Main application Docker image
-├── Makefile                       # Development commands
 └── setup-env.sh                   # Environment setup script
 ```
 
@@ -93,9 +91,12 @@ cd VirtuBuild
 
 ### 2. Environment Setup
 
+Copy the environment template files to create your configuration:
+
 ```bash
-# Setup environment files from templates
-make setup
+cp virtubuild-api/.env.example virtubuild-api/.env
+cp virtubuildapp/.env.example virtubuildapp/.env
+cp .env.example .env
 ```
 
 This creates the following environment files:
@@ -103,22 +104,13 @@ This creates the following environment files:
 - `virtubuild-api/.env` - Backend API configuration
 - `virtubuildapp/.env` - Frontend configuration
 
-### 3. Start with Docker (Recommended)
-
-```bash
-# Build and start all services
-make up-build
-
-# Or using docker-compose directly
-docker-compose up --build -d
-```
-
-### 4. Access the Application
+### 3. Access the Application
 
 - **Frontend Dashboard**: http://localhost:4200
 - **Backend API**: http://localhost:9000
 - **API Documentation**: http://localhost:9000/api-docs
-- **Database Admin (pgAdmin)**: http://localhost:5050
+
+**Note**: For Docker setup and deployment, see [DOCKER_README.md](./DOCKER_README.md)
 
 ## 🛠️ Development Setup
 
@@ -161,31 +153,13 @@ npm run build
 
 ```bash
 # Start only database services
-make dev
+docker-compose up -d postgres pgadmin
 
 # This starts PostgreSQL and pgAdmin
 # Run your applications locally for development
 ```
 
 ## 📋 Available Commands
-
-### Docker Commands (via Makefile)
-
-```bash
-make help          # Show all available commands
-make setup         # Setup environment files
-make build         # Build Docker images
-make up            # Start all services
-make up-build      # Build and start all services
-make down          # Stop all services
-make logs          # Show logs for all services
-make logs-app      # Show logs for app service only
-make logs-db       # Show logs for database service only
-make clean         # Remove all containers, networks, and volumes
-make restart       # Restart all services
-make status        # Show status of all services
-make dev           # Start only database services for development
-```
 
 ### Backend Commands
 
@@ -204,62 +178,15 @@ npm run db:sync    # Synchronize database schema
 npm start          # Start development server
 npm run build      # Build for production
 npm run watch      # Build and watch for changes
-npm test           # Run unit tests
 ```
 
 ## 🔧 Configuration
 
-### Environment Variables
-
-#### Main Configuration (.env)
-```env
-POSTGRES_USER=virtubuild
-POSTGRES_PASSWORD=virtubuild123
-POSTGRES_DB=virtubuild_db
-PGADMIN_EMAIL=admin@virtubuild.com
-PGADMIN_PASSWORD=admin123
-API_PORT=9000
-FRONTEND_PORT=4200
-```
-
-#### Backend Configuration (virtubuild-api/.env)
-```env
-APP_DB_HOST=postgres
-APP_DB_PORT=5432
-APP_DB_USERNAME=virtubuild
-APP_DB_PASSWORD=virtubuild123
-APP_DB_DATABASE=virtubuild_db
-NODE_ENV=production
-PORT=9000
-API_KEY=your-secret-api-key-here
-JWT_SECRET=your-jwt-secret-key-here
-JWT_EXPIRES_IN=24h
-CORS_ORIGIN=http://localhost:4200
-LOG_LEVEL=info
-```
-
-#### Frontend Configuration (virtubuildapp/.env)
-```env
-API_BASE_URL=http://localhost:9000
-ENVIRONMENT=production
-APP_TITLE=VirtuBuild Dashboard
-APP_VERSION=1.0.0
-ENABLE_ANALYTICS=false
-ENABLE_DEBUG=false
-```
+Environment configuration details are available in the individual `.env.example` files in each project directory. For Docker-specific configuration, see [DOCKER_README.md](./DOCKER_README.md).
 
 ## 🗄️ Database
 
-### PostgreSQL Configuration
-- **Version**: PostgreSQL 15 (Alpine)
-- **Default Database**: `virtubuild_db`
-- **Default User**: `virtubuild`
-- **Port**: 5432
-
-### Database Management
-- **pgAdmin**: Web-based PostgreSQL administration
-- **Access**: http://localhost:5050
-- **Default Login**: admin@virtubuild.com / admin123
+The application uses PostgreSQL with TypeORM for database management. Database setup and configuration details are available in [DOCKER_README.md](./DOCKER_README.md).
 
 ### Database Schema
 The application uses TypeORM entities for database management:
@@ -359,30 +286,8 @@ release/version-number
    git merge hotfix/critical-fix
    ```
 
-## 🧪 Testing
-
-### Backend Testing
-```bash
-cd virtubuild-api
-npm test
-```
-
-### Frontend Testing
-```bash
-cd virtubuildapp
-npm test
-```
 
 ## 📦 Deployment
-
-### Docker Deployment
-```bash
-# Build production images
-make build
-
-# Deploy with docker-compose
-make up
-```
 
 ### Manual Deployment
 1. Build backend: `cd virtubuild-api && npm run build`
@@ -392,14 +297,10 @@ make up
 
 ## 🔍 Monitoring & Logging
 
-### Application Logs
-- **Backend Logs**: `virtubuild-api/logs/`
-- **Request Logs**: Morgan middleware for HTTP request logging
-- **Error Logs**: Global error handling middleware
-
 ### Health Checks
 - **API Health**: `GET /api/system/healthcheck`
-- **Database Health**: Built-in PostgreSQL health checks
+
+For detailed logging and monitoring information, see [DOCKER_README.md](./DOCKER_README.md).
 
 ## 🤝 Contributing
 
