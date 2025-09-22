@@ -5,6 +5,11 @@ import { InstructorHomeComponent } from './features/dashboard/instructor/instruc
 
 export const routes: Routes = [
   {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'signin',
+  },
+  {
     path: 'signin',
     component: SigninComponent,
   },
