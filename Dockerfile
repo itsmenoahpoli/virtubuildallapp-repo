@@ -32,7 +32,8 @@ FROM base AS production
 
 RUN apk add --no-cache \
     dumb-init \
-    curl
+    curl \
+    dos2unix
 
 WORKDIR /app
 
@@ -52,6 +53,6 @@ USER nextjs
 EXPOSE 4200 9000
 
 COPY --chown=nextjs:nodejs ./scripts/start.sh ./
-RUN chmod +x ./start.sh
+RUN dos2unix ./start.sh && chmod +x ./start.sh
 
 CMD ["dumb-init", "./start.sh"]

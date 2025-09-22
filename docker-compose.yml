@@ -43,32 +43,36 @@ services:
     networks:
       - virtubuild-network
 
-  app:
+  virtubuild-api:
     build:
-      context: .
+      context: ./virtubuild-api
       dockerfile: Dockerfile
-    container_name: virtubuild-app
+    container_name: virtubuild-api
     restart: unless-stopped
     ports:
-      - "4200:4200"
       - "9000:9000"
-    environment:
-      - NODE_ENV=production
-      - API_PORT=9000
-      - FRONTEND_PORT=4200
     env_file:
       - ./virtubuild-api/.env
-      - ./virtubuildapp/.env
     depends_on:
       postgres:
         condition: service_healthy
     networks:
       - virtubuild-network
-    volumes:
-      - ./virtubuild-api:/app/api
-      - ./virtubuildapp:/app/frontend
-      - /app/api/node_modules
-      - /app/frontend/node_modules
+
+  virtubuild-frontend:
+    build:
+      context: ./virtubuildapp
+      dockerfile: Dockerfile
+    container_name: virtubuild-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
+    env_file:
+      - ./virtubuildapp/.env
+    depends_on:
+      - virtubuild-api
+    networks:
+      - virtubuild-network
 
 volumes:
   postgres_data:
