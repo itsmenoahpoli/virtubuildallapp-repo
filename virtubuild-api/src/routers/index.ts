@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { SystemRouter, AuthRouter, UserRolesRouter } from "./module-routers";
+import { SystemRouter, AuthRouter, UserRolesRouter, ModulesRouter, ActivitiesRouter, AssessmentsRouter, GradesRouter, AnalyticsRouter, ActivationsRouter } from "./module-routers";
 import { SETTINGS } from "@/configs";
 import { AppEnvironments } from "@/types";
 
@@ -16,6 +16,30 @@ const routesConfig = [
 		uri: "/user-roles",
 		router: new UserRolesRouter().routerRoutes,
 	},
+  {
+    uri: "/modules",
+    router: new ModulesRouter().routerRoutes,
+  },
+  {
+    uri: "/activities",
+    router: new ActivitiesRouter().routerRoutes,
+  },
+  {
+    uri: "/assessments",
+    router: new AssessmentsRouter().routerRoutes,
+  },
+  {
+    uri: "/grades",
+    router: new GradesRouter().routerRoutes,
+  },
+  {
+    uri: "/analytics",
+    router: new AnalyticsRouter().routerRoutes,
+  },
+  {
+    uri: "/activations",
+    router: new ActivationsRouter().routerRoutes,
+  },
 ];
 
 const printRouteRoutes = (route: any) => {

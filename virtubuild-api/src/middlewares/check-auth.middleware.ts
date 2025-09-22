@@ -26,8 +26,31 @@ export const CheckAuthMiddleware = (request: Request, response: Response, next: 
 			return;
 		}
 
-		// @ts-ignore
-		request.user = user;
+		request.user = user as any;
 		next();
 	});
+};
+
+export const CheckRoleMiddleware = (roles: string[]) => {
+  return (request: Request, response: Response, next: NextFunction) => {
+    const currentUser = (request.user as any)?.user;
+    if (!currentUser) {
+      return SendHttpResponse(response, { message: HttpErrorTypes.UNAUTHORIZED_ERROR }, HttpStatusCode.UNAUTHORIZED);
+    }
+
+    if (!currentUser.userRoleId) {
+      return SendHttpResponse(response, { message: HttpErrorTypes.FORBIDDEN_ERROR }, HttpStatusCode.FORBIDDEN);
+    }
+
+    const userRoleName = currentUser.roleName || currentUser.role || currentUser.userRoleName;
+    if (userRoleName && roles.map(r => r.toLowerCase()).includes(String(userRoleName).toLowerCase())) {
+      return next();
+    }
+
+    if (roles.includes(String(currentUser.userRoleId))) {
+      return next();
+    }
+
+    return SendHttpResponse(response, { message: HttpErrorTypes.FORBIDDEN_ERROR }, HttpStatusCode.FORBIDDEN);
+  };
 };

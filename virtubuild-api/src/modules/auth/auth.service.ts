@@ -3,6 +3,7 @@ import { UsersService } from "@/modules/users/users.service";
 import { RequestOtp, type SigninCredentials, type SignupData } from "./auth.dto";
 import { verifyPassword } from "@/utils";
 import { SETTINGS } from "@/configs";
+import { userRolesRepository } from "@/database";
 
 export class AuthService {
 	public usersService: UsersService;
@@ -20,7 +21,12 @@ export class AuthService {
 		}
 
 		delete (user as any).password;
-		const authToken = JWT.sign({ user }, SETTINGS.APP_JWT_SECRET_KEY, { expiresIn: "1h" });
+		let roleName: string | undefined = undefined;
+		if (user.userRoleId) {
+			const role = await userRolesRepository.findOneBy({ id: user.userRoleId as number });
+			roleName = role?.name;
+		}
+		const authToken = JWT.sign({ user: { ...user, roleName } }, SETTINGS.APP_JWT_SECRET_KEY, { expiresIn: "1h" });
 
 		return {
 			authToken,

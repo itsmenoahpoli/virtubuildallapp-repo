@@ -1,5 +1,5 @@
 import { DataSource, Repository, type DataSourceOptions } from "typeorm";
-import { User as UserEntity, UserRole as UserRoleEntity } from "./entities";
+import { User as UserEntity, UserRole as UserRoleEntity, Module as ModuleEntity, LabActivity as LabActivityEntity, Assessment as AssessmentEntity, Grade as GradeEntity, PerformanceAnalytics as PerformanceAnalyticsEntity, ModuleActivation as ModuleActivationEntity } from "./entities";
 import { SETTINGS } from "@/configs";
 
 const createDatabaseIfNotExists = async () => {
@@ -45,15 +45,27 @@ const DBDataSource = new DataSource({
 
 let usersRepository: Repository<UserEntity>;
 let userRolesRepository: Repository<UserRoleEntity>;
+let modulesRepository: Repository<ModuleEntity>;
+let labActivitiesRepository: Repository<LabActivityEntity>;
+let assessmentsRepository: Repository<AssessmentEntity>;
+let gradesRepository: Repository<GradeEntity>;
+let performanceAnalyticsRepository: Repository<PerformanceAnalyticsEntity>;
+let moduleActivationsRepository: Repository<ModuleActivationEntity>;
 
 const initializeDatabase = async () => {
   await createDatabaseIfNotExists();
 
-  DBDataSource.initialize()
+  return DBDataSource.initialize()
     .then(() => {
       console.info("Database successfully synced!");
       usersRepository = DBDataSource.getRepository(UserEntity);
       userRolesRepository = DBDataSource.getRepository(UserRoleEntity);
+      modulesRepository = DBDataSource.getRepository(ModuleEntity);
+      labActivitiesRepository = DBDataSource.getRepository(LabActivityEntity);
+      assessmentsRepository = DBDataSource.getRepository(AssessmentEntity);
+      gradesRepository = DBDataSource.getRepository(GradeEntity);
+      performanceAnalyticsRepository = DBDataSource.getRepository(PerformanceAnalyticsEntity);
+      moduleActivationsRepository = DBDataSource.getRepository(ModuleActivationEntity);
     })
     .catch((error) => {
       console.error("Failed to sync database");
@@ -68,4 +80,16 @@ export {
   UserEntity,
   userRolesRepository,
   UserRoleEntity,
+  modulesRepository,
+  ModuleEntity,
+  labActivitiesRepository,
+  LabActivityEntity,
+  assessmentsRepository,
+  AssessmentEntity,
+  gradesRepository,
+  GradeEntity,
+  performanceAnalyticsRepository,
+  PerformanceAnalyticsEntity,
+  moduleActivationsRepository,
+  ModuleActivationEntity,
 };

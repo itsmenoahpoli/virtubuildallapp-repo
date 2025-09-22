@@ -1,3 +1,9 @@
 export { SystemRouter } from "@/modules/system/system.router";
 export { AuthRouter } from "@/modules/auth/auth.router";
 export { UserRolesRouter } from "@/modules/user-roles/user-roles.router";
+export { ModulesRouter } from "@/modules/modules/modules.router";
+export { ActivitiesRouter } from "@/modules/activities/activities.router";
+export { AssessmentsRouter } from "@/modules/assessments/assessments.router";
+export { GradesRouter } from "@/modules/grades/grades.router";
+export { AnalyticsRouter } from "@/modules/analytics/analytics.router";
+export { ActivationsRouter } from "@/modules/activations/activations.router";

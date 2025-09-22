@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import * as Sentry from "@sentry/node";
+// removed sentry import for tests
 import { initializeApiRoutes } from "@/routers";
 import {
   initializeMiddlewares,
   GlobalErrorHandlerMiddleware,
 } from "@/middlewares";
 import { initializeDatabase } from "@/database";
+import { runSeed } from "@/seed";
 import { SETTINGS } from "@/configs";
 import { AppEnvironments } from "@/types";
 import {
@@ -34,7 +35,7 @@ app.use(
 );
 
 initializeApiRoutes(app);
-initializeDatabase();
+initializeDatabase().then(() => runSeed());
 
 app.use(GlobalErrorHandlerMiddleware);
 
@@ -56,4 +57,4 @@ const runApp = (): void => {
   });
 };
 
-export { runApp };
+export { runApp, app };

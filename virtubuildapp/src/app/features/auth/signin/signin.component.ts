@@ -49,8 +49,13 @@ export class SigninComponent {
   async onSubmit() {
     if (this.signinForm.valid) {
       const { email, password, userType } = this.signinForm.value;
-
-      await AuthenticationService.signin(email, password, userType);
+      const decoded = await AuthenticationService.signin(email, password, userType);
+      const role = decoded?.user?.roleName || decoded?.user?.role;
+      if (role?.toLowerCase() === 'instructor') {
+        window.location.href = '/instructor';
+      } else {
+        window.location.href = '/student';
+      }
     }
   }
 
