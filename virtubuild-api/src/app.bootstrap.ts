@@ -8,7 +8,6 @@ import {
   GlobalErrorHandlerMiddleware,
 } from "@/middlewares";
 import { initializeDatabase } from "@/database";
-import { runSeed } from "@/seed";
 import { SETTINGS } from "@/configs";
 import { AppEnvironments } from "@/types";
 import {
@@ -35,7 +34,7 @@ app.use(
 );
 
 initializeApiRoutes(app);
-initializeDatabase().then(() => runSeed());
+initializeDatabase();
 
 app.use(GlobalErrorHandlerMiddleware);
 

@@ -5,9 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const users_service_1 = require("../../modules/users/users.service");
-const utils_1 = require("../../utils");
-const configs_1 = require("../../configs");
+const users_service_1 = require("@/modules/users/users.service");
+const utils_1 = require("@/utils");
+const configs_1 = require("@/configs");
+const database_1 = require("@/database");
 class AuthService {
     usersService;
     constructor() {
@@ -20,7 +21,12 @@ class AuthService {
             return null;
         }
         delete user.password;
-        const authToken = jsonwebtoken_1.default.sign({ user }, configs_1.SETTINGS.APP_JWT_SECRET_KEY, { expiresIn: "1h" });
+        let roleName = undefined;
+        if (user.userRoleId) {
+            const role = await database_1.userRolesRepository.findOneBy({ id: user.userRoleId });
+            roleName = role?.name;
+        }
+        const authToken = jsonwebtoken_1.default.sign({ user: { ...user, roleName } }, configs_1.SETTINGS.APP_JWT_SECRET_KEY, { expiresIn: "1h" });
         return {
             authToken,
         };
@@ -32,7 +38,13 @@ class AuthService {
                 accountExists: true,
             };
         }
-        const createUser = await this.usersService.createUser({ ...accountData, isEnabled: true });
+        const createUser = await this.usersService.createUser({
+            ...accountData,
+            isEnabled: true,
+            isEmailVerified: false,
+            twoFactorEnabled: false,
+            failedLoginAttempts: 0
+        });
         delete createUser.password;
         return {
             accountExists: false,

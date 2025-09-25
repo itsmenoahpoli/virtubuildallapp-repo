@@ -64,14 +64,14 @@ export class AuthController extends BaseController {
     );
 
     if (!result) {
-      return this.sendHttpResponse(
+      this.sendHttpResponse(
         response,
         HttpErrorTypes.UNAUTHORIZED_ERROR,
         HttpStatusCode.UNAUTHORIZED
       );
     }
 
-    return this.sendHttpResponse(response, result, HttpStatusCode.OK);
+    this.sendHttpResponse(response, result, HttpStatusCode.OK);
   }
 
   /**
@@ -112,13 +112,13 @@ export class AuthController extends BaseController {
     );
 
     if (result.accountExists) {
-      return this.sendHttpResponse(
+      this.sendHttpResponse(
         response,
         HttpErrorTypes.ALREADY_EXISTS,
         HttpStatusCode.UNPROCESSABLE_ENTITY
       );
     }
 
-    return this.sendHttpResponse(response, result, HttpStatusCode.CREATED);
+    this.sendHttpResponse(response, result, HttpStatusCode.CREATED);
   }
 }

@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.APP_SENTRY_DSN = exports.APP_DB_DATABASE = exports.APP_DB_PASSWORD = exports.APP_DB_USERNAME = exports.APP_DB_PORT = exports.APP_DB_HOST = exports.APP_URL = exports.APP_ENV = exports.APP_PORT = exports.APP_DB_TYPE = exports.APP_JWT_SECRET_KEY = exports.APP_SECRET_KEY = exports.checkCurrentEnvironment = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
-const types_1 = require("../types");
+const types_1 = require("@/types");
 dotenv_1.default.config();
 const APP_SECRET_KEY = process.env.APP_SECRET_KEY;
 exports.APP_SECRET_KEY = APP_SECRET_KEY;

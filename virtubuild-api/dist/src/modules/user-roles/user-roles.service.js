@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRolesService = void 0;
-const database_1 = require("../../database");
+const database_1 = require("@/database");
 class UserRolesService {
     async fetchList(query) {
         return database_1.userRolesRepository.find({ withDeleted: query.withDeleted });

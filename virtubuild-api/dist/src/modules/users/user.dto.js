@@ -12,21 +12,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserDataDTO = void 0;
 const class_validator_1 = require("class-validator");
 class UserDataDTO {
+    userRoleId;
     firstName;
     middleName;
     lastName;
     email;
     password;
     isEnabled;
+    isEmailVerified;
+    twoFactorEnabled;
+    failedLoginAttempts;
 }
 exports.UserDataDTO = UserDataDTO;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UserDataDTO.prototype, "userRoleId", void 0);
 __decorate([
     (0, class_validator_1.IsNotEmpty)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UserDataDTO.prototype, "firstName", void 0);
 __decorate([
-    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UserDataDTO.prototype, "middleName", void 0);
@@ -50,3 +59,18 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], UserDataDTO.prototype, "isEnabled", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UserDataDTO.prototype, "isEmailVerified", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UserDataDTO.prototype, "twoFactorEnabled", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], UserDataDTO.prototype, "failedLoginAttempts", void 0);

@@ -22,6 +22,17 @@ let User = class User extends shared_entity_1.DateFieldsEntity {
     email;
     password;
     isEnabled;
+    isEmailVerified;
+    twoFactorEnabled;
+    twoFactorSecret;
+    lastLoginAt;
+    lastLoginIp;
+    failedLoginAttempts;
+    lockedUntil;
+    passwordResetToken;
+    passwordResetExpires;
+    emailVerificationToken;
+    emailVerificationExpires;
 };
 exports.User = User;
 __decorate([
@@ -65,6 +76,87 @@ __decorate([
     }),
     __metadata("design:type", Boolean)
 ], User.prototype, "isEnabled", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "boolean",
+        default: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "isEmailVerified", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "boolean",
+        default: false,
+    }),
+    __metadata("design:type", Boolean)
+], User.prototype, "twoFactorEnabled", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "varchar",
+        length: 255,
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "twoFactorSecret", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "timestamp",
+        nullable: true,
+    }),
+    __metadata("design:type", Date)
+], User.prototype, "lastLoginAt", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "varchar",
+        length: 45,
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "lastLoginIp", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "int",
+        default: 0,
+    }),
+    __metadata("design:type", Number)
+], User.prototype, "failedLoginAttempts", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "timestamp",
+        nullable: true,
+    }),
+    __metadata("design:type", Date)
+], User.prototype, "lockedUntil", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "varchar",
+        length: 255,
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "passwordResetToken", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "timestamp",
+        nullable: true,
+    }),
+    __metadata("design:type", Date)
+], User.prototype, "passwordResetExpires", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "varchar",
+        length: 255,
+        nullable: true,
+    }),
+    __metadata("design:type", String)
+], User.prototype, "emailVerificationToken", void 0);
+__decorate([
+    (0, typeorm_1.Column)({
+        type: "timestamp",
+        nullable: true,
+    }),
+    __metadata("design:type", Date)
+], User.prototype, "emailVerificationExpires", void 0);
 exports.User = User = __decorate([
     (0, typeorm_1.Entity)()
 ], User);

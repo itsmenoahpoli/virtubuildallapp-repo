@@ -1,5 +1,5 @@
 import { DataSource, Repository, type DataSourceOptions } from "typeorm";
-import { User as UserEntity, UserRole as UserRoleEntity, Module as ModuleEntity, LabActivity as LabActivityEntity, Assessment as AssessmentEntity, Grade as GradeEntity, PerformanceAnalytics as PerformanceAnalyticsEntity, ModuleActivation as ModuleActivationEntity } from "./entities";
+import { User as UserEntity, UserRole as UserRoleEntity, Module as ModuleEntity, LabActivity as LabActivityEntity, Assessment as AssessmentEntity, Grade as GradeEntity, PerformanceAnalytics as PerformanceAnalyticsEntity, ModuleActivation as ModuleActivationEntity, StudentGroup as StudentGroupEntity, StudentGroupAssignment as StudentGroupAssignmentEntity, StudentProgress as StudentProgressEntity, Simulation as SimulationEntity, Gamification as GamificationEntity, ModulePrerequisite as ModulePrerequisiteEntity, AssessmentSubmission as AssessmentSubmissionEntity, AuditLog as AuditLogEntity, Notification as NotificationEntity, NotificationPreference as NotificationPreferenceEntity, SystemSettings as SystemSettingsEntity } from "./entities";
 import { SETTINGS } from "@/configs";
 
 const createDatabaseIfNotExists = async () => {
@@ -35,7 +35,7 @@ const DBDataSource = new DataSource({
   database: SETTINGS.APP_DB_DATABASE,
   synchronize: true,
   logging: false,
-  entities: [__dirname + "/entities/*.entity.ts"],
+  entities: [UserEntity, UserRoleEntity, ModuleEntity, LabActivityEntity, AssessmentEntity, GradeEntity, PerformanceAnalyticsEntity, ModuleActivationEntity, StudentGroupEntity, StudentGroupAssignmentEntity, StudentProgressEntity, SimulationEntity, GamificationEntity, ModulePrerequisiteEntity, AssessmentSubmissionEntity, AuditLogEntity, NotificationEntity, NotificationPreferenceEntity, SystemSettingsEntity],
   migrations: [__dirname + "/migrations/*.migration.ts"],
   subscribers: [],
   extra: {
@@ -51,6 +51,17 @@ let assessmentsRepository: Repository<AssessmentEntity>;
 let gradesRepository: Repository<GradeEntity>;
 let performanceAnalyticsRepository: Repository<PerformanceAnalyticsEntity>;
 let moduleActivationsRepository: Repository<ModuleActivationEntity>;
+let studentGroupsRepository: Repository<StudentGroupEntity>;
+let studentGroupAssignmentsRepository: Repository<StudentGroupAssignmentEntity>;
+let studentProgressRepository: Repository<StudentProgressEntity>;
+let simulationsRepository: Repository<SimulationEntity>;
+let gamificationRepository: Repository<GamificationEntity>;
+let modulePrerequisitesRepository: Repository<ModulePrerequisiteEntity>;
+let assessmentSubmissionsRepository: Repository<AssessmentSubmissionEntity>;
+let auditLogsRepository: Repository<AuditLogEntity>;
+let notificationsRepository: Repository<NotificationEntity>;
+let notificationPreferencesRepository: Repository<NotificationPreferenceEntity>;
+let systemSettingsRepository: Repository<SystemSettingsEntity>;
 
 const initializeDatabase = async () => {
   await createDatabaseIfNotExists();
@@ -66,6 +77,17 @@ const initializeDatabase = async () => {
       gradesRepository = DBDataSource.getRepository(GradeEntity);
       performanceAnalyticsRepository = DBDataSource.getRepository(PerformanceAnalyticsEntity);
       moduleActivationsRepository = DBDataSource.getRepository(ModuleActivationEntity);
+      studentGroupsRepository = DBDataSource.getRepository(StudentGroupEntity);
+      studentGroupAssignmentsRepository = DBDataSource.getRepository(StudentGroupAssignmentEntity);
+      studentProgressRepository = DBDataSource.getRepository(StudentProgressEntity);
+      simulationsRepository = DBDataSource.getRepository(SimulationEntity);
+      gamificationRepository = DBDataSource.getRepository(GamificationEntity);
+      modulePrerequisitesRepository = DBDataSource.getRepository(ModulePrerequisiteEntity);
+      assessmentSubmissionsRepository = DBDataSource.getRepository(AssessmentSubmissionEntity);
+      auditLogsRepository = DBDataSource.getRepository(AuditLogEntity);
+      notificationsRepository = DBDataSource.getRepository(NotificationEntity);
+      notificationPreferencesRepository = DBDataSource.getRepository(NotificationPreferenceEntity);
+      systemSettingsRepository = DBDataSource.getRepository(SystemSettingsEntity);
     })
     .catch((error) => {
       console.error("Failed to sync database");
@@ -92,4 +114,26 @@ export {
   PerformanceAnalyticsEntity,
   moduleActivationsRepository,
   ModuleActivationEntity,
+  studentGroupsRepository,
+  StudentGroupEntity,
+  studentGroupAssignmentsRepository,
+  StudentGroupAssignmentEntity,
+  studentProgressRepository,
+  StudentProgressEntity,
+  simulationsRepository,
+  SimulationEntity,
+  gamificationRepository,
+  GamificationEntity,
+  modulePrerequisitesRepository,
+  ModulePrerequisiteEntity,
+  assessmentSubmissionsRepository,
+  AssessmentSubmissionEntity,
+  auditLogsRepository,
+  AuditLogEntity,
+  notificationsRepository,
+  NotificationEntity,
+  notificationPreferencesRepository,
+  NotificationPreferenceEntity,
+  systemSettingsRepository,
+  SystemSettingsEntity,
 };

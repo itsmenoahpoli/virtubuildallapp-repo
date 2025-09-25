@@ -42,7 +42,13 @@ export class AuthService {
 			};
 		}
 
-		const createUser = await this.usersService.createUser({ ...accountData, isEnabled: true });
+		const createUser = await this.usersService.createUser({ 
+			...accountData, 
+			isEnabled: true,
+			isEmailVerified: false,
+			twoFactorEnabled: false,
+			failedLoginAttempts: 0
+		});
 		delete (createUser as any).password;
 
 		return {

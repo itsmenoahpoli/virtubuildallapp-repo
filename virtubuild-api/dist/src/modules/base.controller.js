@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseController = void 0;
-const types_1 = require("../types");
+const types_1 = require("@/types");
 class BaseController {
     sendHttpResponse(response, data = null, statusCode = types_1.HttpStatusCode.OK) {
         return response.status(statusCode).json(data);

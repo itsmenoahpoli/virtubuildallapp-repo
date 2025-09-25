@@ -26,5 +26,6 @@ var HttpStatusCode;
     HttpStatusCode[HttpStatusCode["FORBIDDEN"] = 403] = "FORBIDDEN";
     HttpStatusCode[HttpStatusCode["NOT_FOUND"] = 404] = "NOT_FOUND";
     HttpStatusCode[HttpStatusCode["UNPROCESSABLE_ENTITY"] = 422] = "UNPROCESSABLE_ENTITY";
+    HttpStatusCode[HttpStatusCode["TOO_MANY_REQUESTS"] = 429] = "TOO_MANY_REQUESTS";
     HttpStatusCode[HttpStatusCode["INTERNAL_SERVER_ERROR"] = 500] = "INTERNAL_SERVER_ERROR";
 })(HttpStatusCode || (exports.HttpStatusCode = HttpStatusCode = {}));

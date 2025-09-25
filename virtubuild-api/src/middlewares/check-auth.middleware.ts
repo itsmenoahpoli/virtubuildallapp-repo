@@ -4,7 +4,11 @@ import { SendHttpResponse } from "@/utils";
 import { SETTINGS } from "@/configs";
 import { HttpErrorTypes, HttpStatusCode } from "@/types";
 
-export const CheckAuthMiddleware = (request: Request, response: Response, next: NextFunction) => {
+interface AuthenticatedRequest extends Request {
+	user?: any;
+}
+
+export const CheckAuthMiddleware = (request: AuthenticatedRequest, response: Response, next: NextFunction) => {
 	const header = request.header("Authorization");
 	const token = header?.split(" ")[1];
 
@@ -32,7 +36,7 @@ export const CheckAuthMiddleware = (request: Request, response: Response, next: 
 };
 
 export const CheckRoleMiddleware = (roles: string[]) => {
-  return (request: Request, response: Response, next: NextFunction) => {
+  return (request: AuthenticatedRequest, response: Response, next: NextFunction) => {
     const currentUser = (request.user as any)?.user;
     if (!currentUser) {
       return SendHttpResponse(response, { message: HttpErrorTypes.UNAUTHORIZED_ERROR }, HttpStatusCode.UNAUTHORIZED);

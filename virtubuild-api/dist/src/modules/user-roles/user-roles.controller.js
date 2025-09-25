@@ -10,11 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserRolesController = void 0;
-const base_controller_1 = require("../../modules/base.controller");
+const base_controller_1 = require("@/modules/base.controller");
 const user_roles_service_1 = require("./user-roles.service");
-const decorators_1 = require("../../decorators");
-const utils_1 = require("../../utils");
-const types_1 = require("../../types");
+const decorators_1 = require("@/decorators");
+const utils_1 = require("@/utils");
+const types_1 = require("@/types");
 const user_role_dto_1 = require("./user-role.dto");
 class UserRolesController extends base_controller_1.BaseController {
     userRolesService;

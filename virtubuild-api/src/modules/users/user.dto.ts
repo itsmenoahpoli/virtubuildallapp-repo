@@ -1,17 +1,21 @@
-import { IsEmail, IsString, IsBoolean, IsOptional, IsNotEmpty } from "class-validator";
+import { IsEmail, IsString, IsBoolean, IsOptional, IsNotEmpty, IsNumber } from "class-validator";
 import { User as UserEntity } from "@/database/entities";
 import { type OmitDbFields } from "@/types";
 
 export type User = OmitDbFields<UserEntity>;
 
 export class UserDataDTO implements User {
+	@IsOptional()
+	@IsNumber()
+	userRoleId?: number;
+
 	@IsNotEmpty()
 	@IsString()
 	firstName: string;
 
-	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
-	middleName: string;
+	middleName?: string;
 
 	@IsNotEmpty()
 	@IsString()
@@ -28,4 +32,16 @@ export class UserDataDTO implements User {
 	@IsOptional()
 	@IsBoolean()
 	isEnabled: boolean;
+
+	@IsOptional()
+	@IsBoolean()
+	isEmailVerified: boolean;
+
+	@IsOptional()
+	@IsBoolean()
+	twoFactorEnabled: boolean;
+
+	@IsOptional()
+	@IsNumber()
+	failedLoginAttempts: number;
 }

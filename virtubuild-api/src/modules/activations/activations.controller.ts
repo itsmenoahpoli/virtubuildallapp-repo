@@ -15,12 +15,33 @@ export class ActivationsController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /activations/module/{moduleId}:
+	 * /api/activations/module/{moduleId}:
 	 *   get:
-	 *     summary: List activations by module (instructor)
+	 *     summary: List activations by module
+	 *     description: Retrieve all activations for a specific module
 	 *     tags: [Activations]
 	 *     security:
 	 *       - BearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: moduleId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *         description: Module ID
+	 *     responses:
+	 *       200:
+	 *         description: List of module activations
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: array
+	 *               items:
+	 *                 $ref: '#/components/schemas/ModuleActivation'
+	 *       401:
+	 *         $ref: '#/components/responses/UnauthorizedError'
+	 *       404:
+	 *         $ref: '#/components/responses/NotFoundError'
 	 */
 	public async listByModuleHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
 		const result = await this.activationsService.listByModule(+request.params.moduleId);
@@ -29,12 +50,50 @@ export class ActivationsController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /activations/module/{moduleId}/groups/{groupName}:
+	 * /api/activations/module/{moduleId}/groups/{groupName}:
 	 *   post:
-	 *     summary: Activate module for group (instructor)
+	 *     summary: Activate module for group
+	 *     description: Activate a module for a specific student group
 	 *     tags: [Activations]
 	 *     security:
 	 *       - BearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: moduleId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *         description: Module ID
+	 *       - in: path
+	 *         name: groupName
+	 *         required: true
+	 *         schema:
+	 *           type: string
+	 *         description: Group name
+	 *     requestBody:
+	 *       required: true
+	 *       content:
+	 *         application/json:
+	 *           schema:
+	 *             type: object
+	 *             properties:
+	 *               isActive:
+	 *                 type: boolean
+	 *                 default: true
+	 *                 description: Whether the activation is active
+	 *     responses:
+	 *       200:
+	 *         description: Module activated successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               $ref: '#/components/schemas/ModuleActivation'
+	 *       400:
+	 *         $ref: '#/components/responses/ValidationError'
+	 *       401:
+	 *         $ref: '#/components/responses/UnauthorizedError'
+	 *       404:
+	 *         $ref: '#/components/responses/NotFoundError'
 	 */
 	public async activateHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
 		const result = await this.activationsService.activate(+request.params.moduleId, request.params.groupName);
@@ -43,12 +102,41 @@ export class ActivationsController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /activations/module/{moduleId}/groups/{groupName}:
+	 * /api/activations/module/{moduleId}/groups/{groupName}:
 	 *   delete:
-	 *     summary: Deactivate module for group (instructor)
+	 *     summary: Deactivate module for group
+	 *     description: Deactivate a module for a specific student group
 	 *     tags: [Activations]
 	 *     security:
 	 *       - BearerAuth: []
+	 *     parameters:
+	 *       - in: path
+	 *         name: moduleId
+	 *         required: true
+	 *         schema:
+	 *           type: integer
+	 *         description: Module ID
+	 *       - in: path
+	 *         name: groupName
+	 *         required: true
+	 *         schema:
+	 *           type: string
+	 *         description: Group name
+	 *     responses:
+	 *       200:
+	 *         description: Module deactivated successfully
+	 *         content:
+	 *           application/json:
+	 *             schema:
+	 *               type: object
+	 *               properties:
+	 *                 message:
+	 *                   type: string
+	 *                   example: "Module deactivated successfully"
+	 *       401:
+	 *         $ref: '#/components/responses/UnauthorizedError'
+	 *       404:
+	 *         $ref: '#/components/responses/NotFoundError'
 	 */
 	public async deactivateHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
 		const result = await this.activationsService.deactivate(+request.params.moduleId, request.params.groupName);

@@ -10,11 +10,11 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
-const base_controller_1 = require("../../modules/base.controller");
+const base_controller_1 = require("@/modules/base.controller");
 const auth_service_1 = require("./auth.service");
 const auth_dto_1 = require("./auth.dto");
-const decorators_1 = require("../../decorators");
-const types_1 = require("../../types");
+const decorators_1 = require("@/decorators");
+const types_1 = require("@/types");
 class AuthController extends base_controller_1.BaseController {
     authService;
     constructor() {
@@ -58,9 +58,9 @@ class AuthController extends base_controller_1.BaseController {
     async signinHandler(request, response, next) {
         const result = await this.authService.signinAccount(request.body);
         if (!result) {
-            return this.sendHttpResponse(response, types_1.HttpErrorTypes.UNAUTHORIZED_ERROR, types_1.HttpStatusCode.UNAUTHORIZED);
+            this.sendHttpResponse(response, types_1.HttpErrorTypes.UNAUTHORIZED_ERROR, types_1.HttpStatusCode.UNAUTHORIZED);
         }
-        return this.sendHttpResponse(response, result, types_1.HttpStatusCode.OK);
+        this.sendHttpResponse(response, result, types_1.HttpStatusCode.OK);
     }
     /**
      * @swagger
@@ -92,9 +92,9 @@ class AuthController extends base_controller_1.BaseController {
     async signupHandler(request, response, next) {
         const result = await this.authService.signupAccount(request.body);
         if (result.accountExists) {
-            return this.sendHttpResponse(response, types_1.HttpErrorTypes.ALREADY_EXISTS, types_1.HttpStatusCode.UNPROCESSABLE_ENTITY);
+            this.sendHttpResponse(response, types_1.HttpErrorTypes.ALREADY_EXISTS, types_1.HttpStatusCode.UNPROCESSABLE_ENTITY);
         }
-        return this.sendHttpResponse(response, result, types_1.HttpStatusCode.CREATED);
+        this.sendHttpResponse(response, result, types_1.HttpStatusCode.CREATED);
     }
 }
 exports.AuthController = AuthController;
