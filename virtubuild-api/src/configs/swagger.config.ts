@@ -92,16 +92,8 @@ const swaggerOptions = {
         description: "Performance analytics and reporting"
       },
       {
-        name: "Notifications",
-        description: "User notifications and preferences"
-      },
-      {
-        name: "Audit Logs",
-        description: "System audit trails and compliance"
-      },
-      {
-        name: "System Settings",
-        description: "Global application settings"
+        name: "Activations",
+        description: "Module activation management"
       },
       {
         name: "Admin",

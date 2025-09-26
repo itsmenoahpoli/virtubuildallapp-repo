@@ -29,7 +29,7 @@ export class AdminController extends BaseController {
 	 *   get:
 	 *     summary: Get dashboard statistics
 	 *     description: Retrieve comprehensive dashboard statistics including user counts, module statistics, performance metrics, and recent activity
-	 *     tags: [Admin - Dashboard]
+	 *     tags: [Admin]
 	 *     parameters:
 	 *       - in: query
 	 *         name: period
@@ -68,7 +68,7 @@ export class AdminController extends BaseController {
 	 *   get:
 	 *     summary: Get all users
 	 *     description: Retrieve a list of all users with their roles
-	 *     tags: [Admin - Users]
+	 *     tags: [Admin]
 	 *     responses:
 	 *       200:
 	 *         description: Users retrieved successfully
@@ -101,7 +101,7 @@ export class AdminController extends BaseController {
 	 *   get:
 	 *     summary: Get user by ID
 	 *     description: Retrieve a specific user by their ID
-	 *     tags: [Admin - Users]
+	 *     tags: [Admin]
 	 *     parameters:
 	 *       - in: path
 	 *         name: id
@@ -149,7 +149,7 @@ export class AdminController extends BaseController {
 	 *   post:
 	 *     summary: Create a new user
 	 *     description: Create a new user with the provided data. Password will be automatically encrypted.
-	 *     tags: [Admin - Users]
+	 *     tags: [Admin]
 	 *     requestBody:
 	 *       required: true
 	 *       content:
@@ -217,7 +217,7 @@ export class AdminController extends BaseController {
 	 *   put:
 	 *     summary: Update user
 	 *     description: Update an existing user with the provided data. Password will be automatically encrypted if provided.
-	 *     tags: [Admin - Users]
+	 *     tags: [Admin]
 	 *     parameters:
 	 *       - in: path
 	 *         name: id
@@ -278,7 +278,7 @@ export class AdminController extends BaseController {
 	 *   delete:
 	 *     summary: Delete user
 	 *     description: Delete a user by their ID
-	 *     tags: [Admin - Users]
+	 *     tags: [Admin]
 	 *     parameters:
 	 *       - in: path
 	 *         name: id
@@ -394,7 +394,7 @@ export class AdminController extends BaseController {
 	 *   get:
 	 *     summary: Get all modules
 	 *     description: Retrieve a list of all modules
-	 *     tags: [Admin - Modules]
+	 *     tags: [Admin]
 	 *     responses:
 	 *       200:
 	 *         description: Modules retrieved successfully
@@ -441,7 +441,7 @@ export class AdminController extends BaseController {
 	 *   post:
 	 *     summary: Create a new module
 	 *     description: Create a new module with the provided data
-	 *     tags: [Admin - Modules]
+	 *     tags: [Admin]
 	 *     requestBody:
 	 *       required: true
 	 *       content:
