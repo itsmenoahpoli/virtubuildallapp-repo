@@ -24,7 +24,16 @@ let server: Server;
 
 app.use(express.static("public"));
 app.use(express.json());
-app.use(cors());
+const corsOrigin = process.env.CORS_ORIGIN || "*";
+const corsOptions = {
+  origin: corsOrigin === "*" ? true : corsOrigin.split(",").map((o) => o.trim()),
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.disable("powered-by");
 
 initializeMiddlewares(app);
