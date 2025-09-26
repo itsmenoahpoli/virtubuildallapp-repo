@@ -85,4 +85,10 @@ export class AssessmentSubmissionsComponent implements OnInit {
       default: return 'secondary';
     }
   }
+
+  viewResults(assessment: any) {
+    // Navigate to results view or show results modal
+    console.log('Viewing results for assessment:', assessment);
+    // TODO: Implement results viewing functionality
+  }
 }
