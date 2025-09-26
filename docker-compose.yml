@@ -51,6 +51,19 @@ services:
     restart: unless-stopped
     ports:
       - "9000:9000"
+    environment:
+      - NODE_ENV=production
+      - APP_DB_HOST=postgres
+      - APP_DB_PORT=5432
+      - APP_DB_USERNAME=${POSTGRES_USER:-virtubuild}
+      - APP_DB_PASSWORD=${POSTGRES_PASSWORD:-virtubuild123}
+      - APP_DB_DATABASE=${POSTGRES_DB:-virtubuild_db}
+      - PORT=9000
+      - API_KEY=${API_KEY:-your-secret-api-key-here}
+      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-key-here}
+      - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
+      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:4200}
+      - LOG_LEVEL=${LOG_LEVEL:-info}
     env_file:
       - ./virtubuild-api/.env
     depends_on:
