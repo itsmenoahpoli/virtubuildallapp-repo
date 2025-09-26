@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const users_service_1 = require("@/modules/users/users.service");
-const utils_1 = require("@/utils");
-const configs_1 = require("@/configs");
-const database_1 = require("@/database");
+const users_service_1 = require("../../modules/users/users.service");
+const utils_1 = require("../../utils");
+const configs_1 = require("../../configs");
+const database_1 = require("../../database");
 class AuthService {
     usersService;
     constructor() {

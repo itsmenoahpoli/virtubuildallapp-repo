@@ -1,13 +1,14 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { Server } from "http";
 // removed sentry import for tests
 import { initializeApiRoutes } from "@/routers";
 import {
   initializeMiddlewares,
   GlobalErrorHandlerMiddleware,
 } from "@/middlewares";
-import { initializeDatabase } from "@/database";
+import { initializeDatabase, DBDataSource } from "@/database";
 import { SETTINGS } from "@/configs";
 import { AppEnvironments } from "@/types";
 import {
@@ -19,6 +20,7 @@ import {
 dotenv.config();
 
 const app = express();
+let server: Server;
 
 app.use(express.static("public"));
 app.use(express.json());
@@ -38,6 +40,55 @@ initializeDatabase();
 
 app.use(GlobalErrorHandlerMiddleware);
 
+const gracefulShutdown = (signal: string) => {
+  console.log(`\n[SHUTDOWN]: Received ${signal}. Starting graceful shutdown...`);
+  
+  if (server) {
+    server.close((err) => {
+      if (err) {
+        console.error(`[SHUTDOWN]: Error closing server:`, err);
+        process.exit(1);
+      }
+      
+      console.log(`[SHUTDOWN]: Server closed successfully`);
+      
+      if (DBDataSource.isInitialized) {
+        DBDataSource.destroy()
+          .then(() => {
+            console.log(`[SHUTDOWN]: Database connection closed`);
+            process.exit(0);
+          })
+          .catch((error) => {
+            console.error(`[SHUTDOWN]: Error closing database:`, error);
+            process.exit(1);
+          });
+      } else {
+        process.exit(0);
+      }
+    });
+
+    setTimeout(() => {
+      console.error(`[SHUTDOWN]: Forceful shutdown after timeout`);
+      process.exit(1);
+    }, 10000);
+  } else {
+    process.exit(0);
+  }
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
+process.on('uncaughtException', (error) => {
+  console.error(`[ERROR]: Uncaught Exception:`, error);
+  gracefulShutdown('uncaughtException');
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error(`[ERROR]: Unhandled Rejection at:`, promise, 'reason:', reason);
+  gracefulShutdown('unhandledRejection');
+});
+
 const runApp = (): void => {
   const appPort = SETTINGS.APP_PORT;
 
@@ -46,12 +97,13 @@ const runApp = (): void => {
     return;
   }
 
-  app.listen(appPort, "0.0.0.0", () => {
+  server = app.listen(appPort, "0.0.0.0", () => {
     if (SETTINGS.APP_ENV === AppEnvironments.DEV) {
       console.info(`[APP]: App started and running in ${SETTINGS.APP_URL}`);
       console.info(
         `[SWAGGER]: API documentation available at ${SETTINGS.APP_URL}/api-docs`
       );
+      console.info(`[INFO]: Press Ctrl+C to stop the server`);
     }
   });
 };

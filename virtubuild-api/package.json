@@ -8,6 +8,8 @@
 		"start": "node ./dist/index.js",
 		"start:preview": "tsc && tsc-alias && node ./dist/index.js",
 		"dev": "nodemon",
+		"dev:clean": "npm run kill:port && npm run dev",
+		"kill:port": "ts-node -r tsconfig-paths/register ./scripts/kill-port.ts",
 		"prettier:format": "prettier --write .",
 		"db:sync": "ts-node ./scripts/sync-db.ts",
 		"db:migrate": "ts-node -r tsconfig-paths/register ./scripts/migrate.ts",
@@ -21,7 +23,11 @@
 		"migration:revert": "ts-node -r tsconfig-paths/register ./scripts/migrate.ts --revert",
 		"test": "jest --runInBand",
 		"test:watch": "jest --watch",
-		"test:ci": "jest --ci --reporters=default --reporters=jest-junit"
+		"test:ci": "jest --ci --reporters=default --reporters=jest-junit",
+		"test:coverage": "jest --coverage",
+		"test:unit": "jest --testPathPattern=service",
+		"test:integration": "jest --testPathPattern=controller",
+		"test:e2e": "jest --testPathPattern=e2e"
 	},
 	"keywords": [
 		"node",

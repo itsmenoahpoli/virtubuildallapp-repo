@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SystemController = void 0;
-const types_1 = require("@/types");
+const types_1 = require("../../types");
 exports.SystemController = {
     /**
      * @swagger

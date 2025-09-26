@@ -50,15 +50,15 @@ async function generateMigration() {
     }
     
     console.log(`Generating migration: ${migrationName}`);
-    const migration = await AppDataSource.generateMigration({
-      name: migrationName,
-      outputDir: __dirname + "/../src/database/migrations"
-    });
     
-    if (migration) {
-      console.log(`✅ Migration generated successfully: ${migration.name}`);
-      console.log(`📁 Location: ${migration.path}`);
-    } else {
+    const { execSync } = require('child_process');
+    try {
+      execSync(`npx typeorm migration:generate src/database/migrations/${migrationName} -d ${__dirname}/../src/database/index.ts`, {
+        stdio: 'inherit',
+        cwd: __dirname + "/../"
+      });
+      console.log(`✅ Migration generated successfully: ${migrationName}`);
+    } catch (error) {
       console.log("ℹ️  No changes detected. No migration generated.");
     }
     

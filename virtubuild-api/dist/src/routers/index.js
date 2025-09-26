@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.initializeApiRoutes = void 0;
 const module_routers_1 = require("./module-routers");
-const configs_1 = require("@/configs");
-const types_1 = require("@/types");
+const configs_1 = require("../configs");
+const types_1 = require("../types");
 const routesConfig = [
     {
         uri: "/system",

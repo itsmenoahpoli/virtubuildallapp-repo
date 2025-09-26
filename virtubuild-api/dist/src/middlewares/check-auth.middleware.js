@@ -5,9 +5,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CheckRoleMiddleware = exports.CheckAuthMiddleware = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
-const utils_1 = require("@/utils");
-const configs_1 = require("@/configs");
-const types_1 = require("@/types");
+const utils_1 = require("../utils");
+const configs_1 = require("../configs");
+const types_1 = require("../types");
 const CheckAuthMiddleware = (request, response, next) => {
     const header = request.header("Authorization");
     const token = header?.split(" ")[1];

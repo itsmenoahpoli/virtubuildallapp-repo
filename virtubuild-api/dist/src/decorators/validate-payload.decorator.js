@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValidatePayload = void 0;
 const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
-const utils_1 = require("@/utils");
-const types_1 = require("@/types");
+const utils_1 = require("../utils");
+const types_1 = require("../types");
 const ValidatePayload = (dto) => {
     return function (target, propertyKey, descriptor) {
         const originalMethod = descriptor.value;

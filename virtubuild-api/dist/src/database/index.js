@@ -22,7 +22,7 @@ Object.defineProperty(exports, "AuditLogEntity", { enumerable: true, get: functi
 Object.defineProperty(exports, "NotificationEntity", { enumerable: true, get: function () { return entities_1.Notification; } });
 Object.defineProperty(exports, "NotificationPreferenceEntity", { enumerable: true, get: function () { return entities_1.NotificationPreference; } });
 Object.defineProperty(exports, "SystemSettingsEntity", { enumerable: true, get: function () { return entities_1.SystemSettings; } });
-const configs_1 = require("@/configs");
+const configs_1 = require("../configs");
 const createDatabaseIfNotExists = async () => {
     const tempDataSource = new typeorm_1.DataSource({
         type: configs_1.SETTINGS.APP_DB_TYPE,

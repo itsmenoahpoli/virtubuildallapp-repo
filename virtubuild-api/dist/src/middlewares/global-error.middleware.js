@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ErrorHandlerMiddleware = void 0;
-const configs_1 = require("@/configs");
-const types_1 = require("@/types");
+const configs_1 = require("../configs");
+const types_1 = require("../types");
 const getErrorData = (error) => {
     const errType = (statusCode) => {
         if (statusCode === types_1.HttpStatusCode.BAD_REQUEST)

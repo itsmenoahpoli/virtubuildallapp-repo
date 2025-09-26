@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ValidateUrlParams = ValidateUrlParams;
-const utils_1 = require("@/utils");
-const types_1 = require("@/types");
+const utils_1 = require("../utils");
+const types_1 = require("../types");
 const checkMissingParams = (requiredParams, request) => {
     if (Array.isArray(requiredParams)) {
         return requiredParams.filter((param) => !request.params[param]).join(", ");

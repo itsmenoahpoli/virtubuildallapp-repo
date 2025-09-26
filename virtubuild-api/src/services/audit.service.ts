@@ -1,5 +1,5 @@
 import { Repository } from 'typeorm';
-import { AppDataSource } from '@/database';
+import { DBDataSource } from '@/database';
 import { AuditLog } from '@/database/entities';
 
 interface AuditLogData {
@@ -12,14 +12,14 @@ interface AuditLogData {
   endpoint?: string;
   method?: string;
   statusCode?: number;
-  userId: string;
+  userId: number;
 }
 
 export class AuditService {
   private auditLogRepository: Repository<AuditLog>;
 
   constructor() {
-    this.auditLogRepository = AppDataSource.getRepository(AuditLog);
+    this.auditLogRepository = DBDataSource.getRepository(AuditLog);
   }
 
   async log(data: AuditLogData): Promise<AuditLog> {
@@ -40,7 +40,7 @@ export class AuditService {
   }
 
   async getLogs(filters: {
-    userId?: string;
+    userId?: number;
     action?: string;
     resource?: string;
     startDate?: Date;
@@ -85,7 +85,7 @@ export class AuditService {
   }
 
   async exportLogs(filters: {
-    userId?: string;
+    userId?: number;
     action?: string;
     resource?: string;
     startDate?: Date;

@@ -1,5 +1,5 @@
-import { Repository } from 'typeorm';
-import { AppDataSource } from '@/database';
+import { Repository, MoreThan } from 'typeorm';
+import { DBDataSource } from '@/database';
 import { User } from '@/database/entities';
 import { cacheService } from './cache.service';
 import { auditService } from './audit.service';
@@ -14,7 +14,7 @@ export class AuthService {
   private userRepository: Repository<User>;
 
   constructor() {
-    this.userRepository = AppDataSource.getRepository(User);
+    this.userRepository = DBDataSource.getRepository(User);
   }
 
   async register(userData: {
@@ -50,7 +50,7 @@ export class AuthService {
       action: 'USER_REGISTERED',
       resource: 'User',
       resourceId: savedUser.id.toString(),
-      userId: savedUser.id.toString(),
+      userId: savedUser.id,
       details: `User registered with email: ${savedUser.email}`
     });
 
@@ -70,8 +70,8 @@ export class AuthService {
     }
 
     user.isEmailVerified = true;
-    user.emailVerificationToken = null;
-    user.emailVerificationExpires = null;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
 
     const updatedUser = await this.userRepository.save(user);
 
@@ -79,7 +79,7 @@ export class AuthService {
       action: 'EMAIL_VERIFIED',
       resource: 'User',
       resourceId: updatedUser.id.toString(),
-      userId: updatedUser.id.toString(),
+      userId: updatedUser.id,
       details: `Email verified for user: ${updatedUser.email}`
     });
 
@@ -93,8 +93,7 @@ export class AuthService {
     requiresTwoFactor?: boolean;
   }> {
     const user = await this.userRepository.findOne({
-      where: { email },
-      relations: ['userRole']
+      where: { email }
     });
 
     if (!user) {
@@ -143,7 +142,7 @@ export class AuthService {
       action: 'USER_LOGIN',
       resource: 'User',
       resourceId: user.id.toString(),
-      userId: user.id.toString(),
+      userId: user.id,
       details: `User logged in from IP: ${ipAddress}`,
       ipAddress,
       userAgent
@@ -161,8 +160,7 @@ export class AuthService {
     refreshToken: string;
   }> {
     const user = await this.userRepository.findOne({
-      where: { id: parseInt(userId) },
-      relations: ['userRole']
+      where: { id: parseInt(userId) }
     });
 
     if (!user || !user.twoFactorEnabled || !user.twoFactorSecret) {
@@ -184,7 +182,7 @@ export class AuthService {
       action: 'TWO_FACTOR_VERIFIED',
       resource: 'User',
       resourceId: user.id.toString(),
-      userId: user.id.toString(),
+      userId: user.id,
       details: 'Two-factor authentication verified successfully'
     });
 
@@ -217,7 +215,7 @@ export class AuthService {
       action: 'TWO_FACTOR_SETUP',
       resource: 'User',
       resourceId: user.id.toString(),
-      userId: user.id.toString(),
+      userId: user.id,
       details: 'Two-factor authentication setup initiated'
     });
 
@@ -249,7 +247,7 @@ export class AuthService {
       action: 'TWO_FACTOR_ENABLED',
       resource: 'User',
       resourceId: updatedUser.id.toString(),
-      userId: updatedUser.id.toString(),
+      userId: updatedUser.id,
       details: 'Two-factor authentication enabled'
     });
 
@@ -266,8 +264,7 @@ export class AuthService {
     }
 
     const user = await this.userRepository.findOne({
-      where: { id: parseInt(tokenData.userId) },
-      relations: ['userRole']
+      where: { id: parseInt(tokenData.userId) }
     });
 
     if (!user || !user.isEnabled) {
@@ -282,7 +279,7 @@ export class AuthService {
       action: 'TOKEN_REFRESHED',
       resource: 'User',
       resourceId: user.id.toString(),
-      userId: user.id.toString(),
+      userId: user.id,
       details: 'Access token refreshed'
     });
 
@@ -300,7 +297,7 @@ export class AuthService {
       action: 'USER_LOGOUT',
       resource: 'User',
       resourceId: userId,
-      userId,
+      userId: parseInt(userId),
       details: 'User logged out'
     });
   }
@@ -325,7 +322,7 @@ export class AuthService {
       action: 'PASSWORD_RESET_REQUESTED',
       resource: 'User',
       resourceId: user.id.toString(),
-      userId: user.id.toString(),
+      userId: user.id,
       details: `Password reset requested for email: ${email}`
     });
   }
@@ -344,8 +341,8 @@ export class AuthService {
 
     const hashedPassword = await argon2.hash(newPassword);
     user.password = hashedPassword;
-    user.passwordResetToken = null;
-    user.passwordResetExpires = null;
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
 
     const updatedUser = await this.userRepository.save(user);
 
@@ -355,7 +352,7 @@ export class AuthService {
       action: 'PASSWORD_RESET',
       resource: 'User',
       resourceId: updatedUser.id.toString(),
-      userId: updatedUser.id.toString(),
+      userId: updatedUser.id,
       details: 'Password reset successfully'
     });
 
@@ -371,8 +368,7 @@ export class AuthService {
         user: {
           id: user.id,
           email: user.email,
-          userRoleId: user.userRoleId,
-          roleName: user.userRole?.roleName
+          userRoleId: user.userRoleId
         }
       },
       SETTINGS.APP_JWT_SECRET_KEY,
@@ -398,7 +394,7 @@ export class AuthService {
   private async resetFailedLoginAttempts(user: User): Promise<void> {
     if (user.failedLoginAttempts > 0) {
       user.failedLoginAttempts = 0;
-      user.lockedUntil = null;
+      user.lockedUntil = undefined;
       await this.userRepository.save(user);
     }
   }
