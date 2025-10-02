@@ -4,8 +4,10 @@ import { environment } from '@/environments/environment';
 const TIMEOUT_MS: number = 3000;
 
 export const createHttpClient = (): AxiosInstance => {
+  const viteEnv = (import.meta as any).env || {};
+  const baseURL: string = viteEnv.VITE_API_BASE_URL || environment.apiUrl;
   const client = axios.create({
-    baseURL: environment.apiUrl,
+    baseURL,
     timeout: TIMEOUT_MS,
     headers: {
       'Content-Type': 'application/json',

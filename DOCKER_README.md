@@ -99,7 +99,7 @@ LOG_LEVEL=info
 
 ### Frontend Configuration (virtubuildapp/.env)
 ```env
-API_BASE_URL=http://localhost:9000
+VITE_API_BASE_URL=http://localhost:9000/api
 ENVIRONMENT=production
 APP_TITLE=VirtuBuild Dashboard
 APP_VERSION=1.0.0

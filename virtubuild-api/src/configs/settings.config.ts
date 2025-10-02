@@ -15,6 +15,7 @@ const APP_DB_USERNAME: string = process.env.APP_DB_USERNAME as string;
 const APP_DB_PASSWORD: string = process.env.APP_DB_PASSWORD as string;
 const APP_DB_DATABASE: string = process.env.APP_DB_DATABASE as string;
 const APP_SENTRY_DSN: string = process.env.APP_SENTRY_DSN as string;
+const APP_CORS_ORIGIN: string | string[] = (process.env.CORS_ORIGIN as string) || "http://localhost:4200";
 
 const checkCurrentEnvironment = (environment: AppEnvironment) => {
 	return APP_ENV === environment;
@@ -34,4 +35,5 @@ export {
 	APP_DB_PASSWORD,
 	APP_DB_DATABASE,
 	APP_SENTRY_DSN,
+	APP_CORS_ORIGIN,
 };
