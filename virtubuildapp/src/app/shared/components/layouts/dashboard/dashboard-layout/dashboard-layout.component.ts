@@ -105,29 +105,39 @@ export class DashboardLayoutComponent implements OnInit {
       case USER_TYPES.STUDENT:
         return [
           {
-            label: 'View Assessments',
-            route: '/student/assessments',
+            label: 'Dashboard',
+            route: '/student',
+            icon: 'dashboard',
+          },
+          {
+            label: 'Activities',
+            route: '/student/activities',
             icon: 'assignment',
           },
           {
-            label: 'View Quizzes',
-            route: '/student/quizzes',
-            icon: 'quiz',
-          },
-          {
-            label: 'View Laboratory Activities',
-            route: '/student/laboratories',
-            icon: 'science',
-          },
-          {
-            label: 'View Gradebook',
-            route: '/student/gradebook',
+            label: 'Grades',
+            route: '/student/grades',
             icon: 'grade',
           },
           {
-            label: 'Laboratory Simulator',
-            route: '/student/simulator',
-            icon: 'biotech',
+            label: 'Analytics',
+            route: '/student/analytics',
+            icon: 'analytics',
+          },
+          {
+            label: 'Progress',
+            route: '/student/progress',
+            icon: 'trending_up',
+          },
+          {
+            label: 'Gamification',
+            route: '/student/gamification',
+            icon: 'emoji_events',
+          },
+          {
+            label: 'Assessments',
+            route: '/student/assessments',
+            icon: 'quiz',
           },
         ];
       default:

@@ -14,6 +14,7 @@ export const selectUserProfile = createSelector(
     state.name
       ? {
           name: state.name,
+          email: state.email || undefined,
           avatar: state.avatar || undefined,
         }
       : null

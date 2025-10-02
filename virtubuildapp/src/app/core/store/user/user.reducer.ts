@@ -8,9 +8,10 @@ export const userReducer = createReducer(
     ...state,
     userType,
   })),
-  on(setUserProfile, (state, { name, avatar }) => ({
+  on(setUserProfile, (state, { name, email, avatar }) => ({
     ...state,
     name,
+    email,
     avatar,
   })),
   on(clearUser, () => initialUserState)

@@ -8,7 +8,7 @@ export const setUserType = createAction(
 
 export const setUserProfile = createAction(
   '[User] Set User Profile',
-  props<{ name: string; avatar?: string }>()
+  props<{ name: string; email?: string; avatar?: string }>()
 );
 
 export const clearUser = createAction('[User] Clear User');

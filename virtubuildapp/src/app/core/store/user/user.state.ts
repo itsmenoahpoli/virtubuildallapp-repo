@@ -4,10 +4,12 @@ export interface UserState {
   userType: USER_TYPES | null;
   name: string | null;
   avatar?: string | null;
+  email?: string | null;
 }
 
 export const initialUserState: UserState = {
   userType: null,
   name: null,
   avatar: null,
+  email: null,
 };

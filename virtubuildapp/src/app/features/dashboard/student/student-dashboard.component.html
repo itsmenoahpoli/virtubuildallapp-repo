@@ -1,13 +1,87 @@
-<div class="page">
-  <h2>My Modules</h2>
-  <ul>
-    <li *ngFor="let m of modules">{{ m.title }} - {{ m.description }}</li>
-  </ul>
+<app-dashboard-layout [appTitle]="appTitle">
+  <div class="student-dashboard">
+    <div class="dashboard-header">
+      <h1>Welcome to Your Dashboard</h1>
+      <p>Track your progress and access your learning materials</p>
+    </div>
 
-  <h2>Performance</h2>
-  <ul>
-    <li *ngFor="let a of analytics">Activity {{ a.activityId }} - Time {{ a.timeSpentSeconds }}s - Errors {{ a.errorCount }}</li>
-  </ul>
-</div>
+    <div class="dashboard-content">
+      <div class="modules-section">
+        <h2>My Modules</h2>
+        <div class="modules-grid" *ngIf="modules.length > 0; else noModules">
+          <div class="module-card" *ngFor="let module of modules">
+            <h3>{{ module.title }}</h3>
+            <p>{{ module.description }}</p>
+            <div class="module-actions">
+              <a [routerLink]="['/student/activities']" class="btn btn-primary">View Activities</a>
+            </div>
+          </div>
+        </div>
+        <ng-template #noModules>
+          <div class="empty-state">
+            <p>No modules assigned yet. Contact your instructor.</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="analytics-section">
+        <h2>Your Performance</h2>
+        <div *ngIf="analytics.length > 0; else noAnalytics">
+          <div class="analytics-grid">
+            <div class="analytics-card" *ngFor="let stat of analytics">
+              <div class="stat-item">
+                <span class="stat-label">Activity {{ stat.activityId }}</span>
+                <span class="stat-value">{{ stat.timeSpentSeconds }}s</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-label">Errors</span>
+                <span class="stat-value">{{ stat.errorCount }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noAnalytics>
+          <div class="empty-state">
+            <p>No performance data available yet. Complete some activities to see your progress.</p>
+          </div>
+        </ng-template>
+      </div>
+
+      <div class="quick-actions">
+        <h2>Quick Actions</h2>
+        <div class="actions-grid">
+          <a [routerLink]="['/student/activities']" class="action-card">
+            <div class="action-icon">📚</div>
+            <div class="action-content">
+              <h3>Activities</h3>
+              <p>View and complete learning activities</p>
+            </div>
+          </a>
+          <a [routerLink]="['/student/grades']" class="action-card">
+            <div class="action-icon">📊</div>
+            <div class="action-content">
+              <h3>Grades</h3>
+              <p>Check your grades and feedback</p>
+            </div>
+          </a>
+          <a [routerLink]="['/student/progress']" class="action-card">
+            <div class="action-icon">📈</div>
+            <div class="action-content">
+              <h3>Progress</h3>
+              <p>Track your learning progress</p>
+            </div>
+          </a>
+          <a [routerLink]="['/student/assessments']" class="action-card">
+            <div class="action-icon">📝</div>
+            <div class="action-content">
+              <h3>Assessments</h3>
+              <p>Take quizzes and assessments</p>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-dashboard-layout>
 
 

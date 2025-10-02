@@ -8,6 +8,7 @@ import { clearUser } from '@/app/core/store/user';
 
 interface UserProfile {
   name: string;
+  email?: string;
   avatar?: string;
 }
 
