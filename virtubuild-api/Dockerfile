@@ -5,13 +5,16 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Install all dependencies including dev dependencies for build
+RUN npm ci && npm i -g typescript tsc-alias
 
 COPY . .
 
-RUN npm run build
+# Build the application
+RUN tsc && tsc-alias -p tsconfig.json
 
-RUN npm prune --production
+# Prune dev dependencies for production image
+RUN npm prune --omit=dev
 
 EXPOSE 9000
 

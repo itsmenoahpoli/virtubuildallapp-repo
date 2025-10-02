@@ -7,7 +7,7 @@ RUN apk add --no-cache libc6-compat
 FROM base AS api-deps
 WORKDIR /app/api
 COPY virtubuild-api/package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+RUN npm ci && npm cache clean --force
 
 FROM base AS api-build
 WORKDIR /app/api
