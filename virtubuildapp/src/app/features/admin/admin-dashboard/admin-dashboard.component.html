@@ -1,9 +1,5 @@
-<div class="admin-dashboard">
-  <div class="dashboard-header">
-    <h1>Admin Dashboard</h1>
-    <p>System overview and management</p>
-  </div>
-
+<app-dashboard-layout [appTitle]="'VirtuBuild'">
+  <app-page-shell title="Admin" subtitle="System overview and management">
   <div class="dashboard-content" *ngIf="!loading">
     <div class="stats-grid">
       <div class="stat-card" *ngIf="dashboardStats.totalUsers">
@@ -84,4 +80,5 @@
     <div class="spinner"></div>
     <p>Loading dashboard...</p>
   </div>
-</div>
+  </app-page-shell>
+</app-dashboard-layout>
