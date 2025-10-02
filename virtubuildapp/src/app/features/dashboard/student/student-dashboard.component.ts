@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ModulesService, AnalyticsService } from '@/app/core/services';
 import { DashboardLayoutComponent } from '@/app/shared/components/layouts/dashboard/dashboard-layout/dashboard-layout.component';
+import { PageShellComponent } from '@/app/shared/components/layouts/page-shell/page-shell.component';
 
 @Component({
   selector: 'app-student-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, DashboardLayoutComponent],
+  imports: [CommonModule, RouterModule, DashboardLayoutComponent, PageShellComponent],
   templateUrl: './student-dashboard.component.html',
   styleUrls: ['./student-dashboard.component.scss'],
 })

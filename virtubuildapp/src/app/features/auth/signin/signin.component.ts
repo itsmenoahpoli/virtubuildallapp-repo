@@ -10,6 +10,7 @@ import { CommonModule } from '@angular/common';
 import { AuthenticationService } from '@/app/core/services';
 import { Store } from '@ngrx/store';
 import { setUserProfile, setUserType } from '@/app/core/store/user/user.actions';
+import { Router } from '@angular/router';
 import { FormInputComponent } from '@/app/shared/components/ui/form/form-input/form-input.component';
 import { RadioGroupComponent } from '@/app/shared/components/ui/form/radio-group/radio-group.component';
 import { getErrorMessage } from '@/app/shared/utils/form.utils';
@@ -44,7 +45,7 @@ export class SigninComponent {
   healthStatus: 'checking' | 'ok' | 'fail' = 'checking';
   healthMessage = '';
 
-  constructor(private fb: FormBuilder, private store: Store) {
+  constructor(private fb: FormBuilder, private store: Store, private router: Router) {
     this.signinForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
@@ -86,14 +87,15 @@ export class SigninComponent {
       const { email, password, userType } = this.signinForm.value;
       const decoded = await AuthenticationService.signin(email, password, userType);
       const role = decoded?.user?.roleName || decoded?.user?.role;
+      const id = decoded?.user?.id || decoded?.user?.userId || undefined;
       const name = decoded?.user?.name || decoded?.user?.fullName || decoded?.user?.email || '';
       const avatar = decoded?.user?.avatar || undefined;
       this.store.dispatch(setUserType({ userType: (role || '').toLowerCase() } as any));
-      this.store.dispatch(setUserProfile({ name, email, avatar }));
+      this.store.dispatch(setUserProfile({ id, name, email, avatar }));
       if (role?.toLowerCase() === 'instructor') {
-        window.location.href = '/instructor';
+        this.router.navigate(['/instructor']);
       } else {
-        window.location.href = '/student';
+        this.router.navigate(['/student']);
       }
     }
   }

@@ -1,10 +1,39 @@
-<div>
-  <h2>Activities</h2>
-  <ul>
-    <li *ngFor="let a of activities">
-      <a [routerLink]="['/student/activities', a.id]">{{ a.title }}</a>
-    </li>
-  </ul>
-</div>
+<app-dashboard-layout [appTitle]="appTitle">
+  <app-page-shell title="Activities" subtitle="Your web analytics dashboard template.">
+    <div class="activities-content">
+      <div class="activities-grid" *ngIf="activities.length > 0; else noActivities">
+        <div class="activity-card" *ngFor="let activity of activities">
+          <div class="activity-header">
+            <h3>{{ activity.title }}</h3>
+            <span class="activity-type">{{ activity.type || 'Activity' }}</span>
+          </div>
+          <div class="activity-content">
+            <p class="activity-description">{{ activity.description || 'No description available' }}</p>
+            <div class="activity-meta">
+              <span class="activity-module" *ngIf="activity.moduleTitle">{{ activity.moduleTitle }}</span>
+              <span class="activity-duration" *ngIf="activity.estimatedDuration">{{ activity.estimatedDuration }} min</span>
+            </div>
+          </div>
+          <div class="activity-actions">
+            <a [routerLink]="['/student/activities', activity.id]" class="btn btn-primary">
+              View Details
+            </a>
+            <a [routerLink]="['/student/simulation', activity.id]" class="btn btn-secondary" *ngIf="activity.type === 'simulation'">
+              Start Simulation
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noActivities>
+        <div class="empty-state">
+          <div class="empty-icon">📚</div>
+          <h3>No Activities Available</h3>
+          <p>No activities have been assigned to you yet. Contact your instructor for more information.</p>
+        </div>
+      </ng-template>
+    </div>
+  </app-page-shell>
+</app-dashboard-layout>
 
 
