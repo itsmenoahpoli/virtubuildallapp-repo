@@ -6,16 +6,16 @@ services:
     env_file:
       - .env
     environment:
-      POSTGRES_USER: $APP_DB_USERNAME
-      POSTGRES_PASSWORD: $APP_DB_PASSWORD
-      POSTGRES_DB: $APP_DB_DATABASE
+      POSTGRES_USER: ${APP_DB_USERNAME:-virtubuild}
+      POSTGRES_PASSWORD: ${APP_DB_PASSWORD:-virtubuild123}
+      POSTGRES_DB: ${APP_DB_DATABASE:-virtubuild_db}
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5432:5432"
     networks:
       - app-network
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD", "pg_isready", "-U", "${APP_DB_USERNAME:-virtubuild}"]
       interval: 5s
       retries: 5
       start_period: 5s

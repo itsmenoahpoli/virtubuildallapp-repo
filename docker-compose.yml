@@ -59,8 +59,8 @@ services:
       - APP_DB_PASSWORD=${POSTGRES_PASSWORD:-virtubuild123}
       - APP_DB_DATABASE=${POSTGRES_DB:-virtubuild_db}
       - PORT=9000
-      - API_KEY=${API_KEY:-your-secret-api-key-here}
-      - JWT_SECRET=${JWT_SECRET:-your-jwt-secret-key-here}
+      - APP_SECRET_KEY=${API_KEY:-your-secret-api-key-here}
+      - APP_JWT_SECRET_KEY=${JWT_SECRET:-your-jwt-secret-key-here}
       - JWT_EXPIRES_IN=${JWT_EXPIRES_IN:-24h}
       - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:4200}
       - LOG_LEVEL=${LOG_LEVEL:-info}
