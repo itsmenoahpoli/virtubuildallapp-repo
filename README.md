@@ -104,13 +104,84 @@ This creates the following environment files:
 - `virtubuild-api/.env` - Backend API configuration
 - `virtubuildapp/.env` - Frontend configuration
 
-### 3. Access the Application
+### 3. Choose Your Deployment Mode
+
+**For Development (with live reload):**
+```bash
+./scripts/dev-start.sh
+```
+- Frontend: http://localhost:4200 (with live reload)
+- Backend: http://localhost:9000 (with live reload)
+- Database: localhost:5432
+- PgAdmin: http://localhost:5050
+
+**For Production:**
+```bash
+docker-compose up --build
+```
+- Frontend: http://localhost:4200
+- Backend: http://localhost:9000
+- Database: localhost:5432
+- PgAdmin: http://localhost:5050
+
+### 4. Access the Application
 
 - **Frontend Dashboard**: http://localhost:4200
 - **Backend API**: http://localhost:9000
 - **API Documentation**: http://localhost:9000/api-docs
 
 **Note**: For Docker setup and deployment, see [DOCKER_README.md](./DOCKER_README.md)
+
+## 🔄 Development with Live Reload
+
+For development with automatic file watching and live reload:
+
+### Quick Development Start
+```bash
+# Start development environment with live reload
+./scripts/dev-start.sh
+
+# Stop development environment
+./scripts/dev-stop.sh
+```
+
+### Manual Docker Commands
+If you prefer to use Docker commands directly:
+
+```bash
+# Start development environment
+docker-compose -f docker-compose.dev.yml up
+
+# Start in background (detached mode)
+docker-compose -f docker-compose.dev.yml up -d
+
+# Build and start
+docker-compose -f docker-compose.dev.yml up --build
+
+# Stop development environment
+docker-compose -f docker-compose.dev.yml down
+
+# View logs
+docker-compose -f docker-compose.dev.yml logs -f
+
+# View specific service logs
+docker-compose -f docker-compose.dev.yml logs -f virtubuild-api-dev
+docker-compose -f docker-compose.dev.yml logs -f virtubuild-frontend-dev
+```
+
+### Development Features
+- **Backend Live Reload**: Nodemon automatically restarts the API when you save TypeScript files
+- **Frontend Live Reload**: Angular CLI automatically refreshes the browser when you save files
+- **Volume Mounting**: Source code is mounted as volumes for instant changes
+- **Database Persistence**: Database data persists across container restarts
+
+### Development Workflow
+1. Make changes to any file in `virtubuild-api/src/` or `virtubuildapp/src/`
+2. Save the file
+3. Backend automatically restarts (if backend file) or frontend automatically refreshes (if frontend file)
+4. See your changes immediately without rebuilding Docker images
+
+For detailed development setup, see [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 ## 🛠️ Development Setup
 
