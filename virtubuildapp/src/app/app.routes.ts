@@ -26,6 +26,10 @@ import { AdminModulesComponent } from './features/admin/modules/admin-modules.co
 import { AdminLabActivitiesComponent } from './features/admin/lab-activities/admin-lab-activities.component';
 import { AdminAssessmentsComponent } from './features/admin/assessments/admin-assessments.component';
 import { AdminGradesComponent } from './features/admin/grades/admin-grades.component';
+import { AboutUsComponent } from './features/public/about-us/about-us.component';
+import { ContactComponent } from './features/public/contact/contact.component';
+import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './features/auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
   {
@@ -37,6 +41,10 @@ export const routes: Routes = [
     path: 'signin',
     component: SigninComponent,
   },
+  { path: 'about-us', component: AboutUsComponent },
+  { path: 'contact', component: ContactComponent },
+  { path: 'forgot-password', component: ForgotPasswordComponent },
+  { path: 'reset-password', component: ResetPasswordComponent },
   {
     path: 'student',
     canActivate: [AuthGuard, RoleGuard],
