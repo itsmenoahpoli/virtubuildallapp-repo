@@ -5,7 +5,7 @@
         <div class="selector-row">
           <div class="module-group">
             <label for="moduleSelect">Filter by Module:</label>
-            <select id="moduleSelect" (change)="onModuleChange(+$event.target.value)" class="module-select">
+            <select id="moduleSelect" (change)="onModuleChange(+$any($event.target).value)" class="module-select">
               <option value="">All Modules</option>
               <option *ngFor="let module of modules" [value]="module.id">
                 {{ module.title }}
@@ -60,7 +60,7 @@
           <p>No activities have been assigned to you yet. Contact your instructor for more information.</p>
           <div class="debug-info" *ngIf="modules.length > 0">
             <p><strong>Debug:</strong> Found {{ modules.length }} modules but no activities.</p>
-            <p>Modules: {{ modules.map(m => m.title).join(', ') }}</p>
+            <p>Modules: {{ moduleTitles }}</p>
           </div>
         </div>
       </ng-template>

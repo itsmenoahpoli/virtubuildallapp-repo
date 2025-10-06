@@ -17,6 +17,7 @@ export class ActivitiesListComponent implements OnInit {
   appTitle = 'VirtuBuild';
   modules: any[] = [];
   activities: any[] = [];
+  moduleTitles = '';
 
   async ngOnInit() {
     try {
@@ -30,6 +31,7 @@ export class ActivitiesListComponent implements OnInit {
       console.log('Modules response structure:', JSON.stringify(this.modules, null, 2));
 
       this.extractActivitiesFromModules();
+      this.moduleTitles = this.modules.map((m: any) => m?.title).filter(Boolean).join(', ');
 
       if (this.activities.length === 0 && this.modules.length === 0) {
         console.log('No modules found, creating test data...');
@@ -78,17 +80,17 @@ export class ActivitiesListComponent implements OnInit {
     this.activities = [];
 
     if (this.moduleId) {
-      const targetModule = this.modules.find(module => module.id === this.moduleId);
+      const targetModule = this.modules.find((module: any) => module.id === this.moduleId);
       if (targetModule && targetModule.activities) {
-        this.activities = targetModule.activities.map(activity => ({
+        this.activities = targetModule.activities.map((activity: any) => ({
           ...activity,
           moduleTitle: targetModule.title
         }));
         console.log('Activities from specific module:', this.activities);
       }
     } else {
-      this.activities = this.modules.flatMap(module =>
-        (module.activities || []).map(activity => ({
+      this.activities = this.modules.flatMap((module: any) =>
+        (module.activities || []).map((activity: any) => ({
           ...activity,
           moduleTitle: module.title
         }))

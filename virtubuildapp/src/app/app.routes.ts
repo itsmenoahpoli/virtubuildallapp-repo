@@ -21,6 +21,11 @@ import { PcAssemblySimulationComponent } from './features/student/simulation/pc-
 import { GamificationDashboardComponent } from './features/student/gamification/gamification-dashboard.component';
 import { ProgressTrackingComponent } from './features/student/progress/progress-tracking.component';
 import { AssessmentSubmissionsComponent } from './features/student/assessments/assessment-submissions.component';
+import { UserRolesManagementComponent } from './features/admin/user-roles/user-roles-management.component';
+import { AdminModulesComponent } from './features/admin/modules/admin-modules.component';
+import { AdminLabActivitiesComponent } from './features/admin/lab-activities/admin-lab-activities.component';
+import { AdminAssessmentsComponent } from './features/admin/assessments/admin-assessments.component';
+import { AdminGradesComponent } from './features/admin/grades/admin-grades.component';
 
 export const routes: Routes = [
   {
@@ -68,6 +73,11 @@ export const routes: Routes = [
       { path: '', component: AdminDashboardComponent },
       { path: 'users', component: UserManagementComponent },
       { path: 'student-groups', component: StudentGroupsManagementComponent },
+      { path: 'modules', component: AdminModulesComponent },
+      { path: 'lab-activities', component: AdminLabActivitiesComponent },
+      { path: 'assessments', component: AdminAssessmentsComponent },
+      { path: 'grades', component: AdminGradesComponent },
+      { path: 'user-roles', component: UserRolesManagementComponent },
     ],
   },
   {
