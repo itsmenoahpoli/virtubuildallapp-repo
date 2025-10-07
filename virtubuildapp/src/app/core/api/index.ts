@@ -5,8 +5,8 @@ const DEFAULT_TIMEOUT_MS: number = 10000;
 
 export const createHttpClient = (): AxiosInstance => {
   const viteEnv = (import.meta as any).env || {};
-  const baseURL: string = viteEnv.VITE_API_BASE_URL || environment.apiUrl;
-  const timeoutEnv = viteEnv.VITE_API_TIMEOUT_MS || DEFAULT_TIMEOUT_MS;
+  const baseURL: string = viteEnv.VITE_APP_API_BASE_URL || environment.apiUrl;
+  const timeoutEnv = viteEnv.VITE_APP_API_TIMEOUT_MS || DEFAULT_TIMEOUT_MS;
   const parsedTimeout = typeof timeoutEnv === 'string' ? parseInt(timeoutEnv, 10) : timeoutEnv;
   const timeout = Number.isFinite(parsedTimeout) ? parsedTimeout : DEFAULT_TIMEOUT_MS;
   const client = axios.create({
