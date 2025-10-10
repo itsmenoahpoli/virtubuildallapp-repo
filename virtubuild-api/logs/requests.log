@@ -169,3 +169,5 @@
 [2025-10-10T00:22:50.457Z] GET /api-docs/swagger-ui-standalone-preset.js 200 {}
 [2025-10-10T00:22:50.518Z] GET /api-docs/swagger-ui-bundle.js 200 {}
 [2025-10-10T00:22:50.642Z] GET /api-docs/favicon-16x16.png 200 {}
+[2025-10-10T00:28:50.067Z] GET /api/system/healthcheck 200 {}
+[2025-10-10T00:28:54.985Z] GET /api/system/healthcheck 304 {}
