@@ -34,22 +34,22 @@ describe('ActivitiesService', () => {
 
       mockLabActivitiesRepository.find.mockResolvedValue(mockActivities as any);
 
-      const result = await activitiesService.listByModule(1);
+      const result = await activitiesService.listAll();
 
       expect(result).toEqual(mockActivities);
       expect(mockLabActivitiesRepository.find).toHaveBeenCalledWith({
-        where: { moduleId: 1, isEnabled: true }
+        where: { isEnabled: true }
       });
     });
 
     it('should return empty array for module with no activities', async () => {
       mockLabActivitiesRepository.find.mockResolvedValue([]);
 
-      const result = await activitiesService.listByModule(999);
+      const result = await activitiesService.listAll();
 
       expect(result).toEqual([]);
       expect(mockLabActivitiesRepository.find).toHaveBeenCalledWith({
-        where: { moduleId: 999, isEnabled: true }
+        where: { isEnabled: true }
       });
     });
 
@@ -65,11 +65,11 @@ describe('ActivitiesService', () => {
 
       mockLabActivitiesRepository.find.mockResolvedValue(mockActivities as any);
 
-      const result = await activitiesService.listByModule(1);
+      const result = await activitiesService.listAll();
 
       expect(result).toEqual(mockActivities);
       expect(mockLabActivitiesRepository.find).toHaveBeenCalledWith({
-        where: { moduleId: 1, isEnabled: true }
+        where: { isEnabled: true }
       });
     });
   });

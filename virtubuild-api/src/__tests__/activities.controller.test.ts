@@ -88,8 +88,9 @@ describe('ActivitiesController', () => {
 
   describe('ActivitiesController methods', () => {
     it('should have all required methods', () => {
-      expect(typeof activitiesController.listByModuleHandler).toBe('function');
+      expect(typeof activitiesController.listAllHandler).toBe('function');
       expect(typeof activitiesController.getByIdHandler).toBe('function');
+      expect(typeof activitiesController.updateHandler).toBe('function');
     });
 
     it('should have activitiesService instance', () => {

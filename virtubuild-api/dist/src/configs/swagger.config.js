@@ -26,7 +26,7 @@ const swaggerOptions = {
         },
         servers: [
             {
-                url: "http://localhost:9000/api",
+                url: "http://localhost:9000/",
                 description: "Development Server",
                 variables: {
                     port: {
