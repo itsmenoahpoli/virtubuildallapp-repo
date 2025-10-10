@@ -35,7 +35,6 @@ export const SystemController = {
       .status(HttpStatusCode.OK)
       .json({
         message: "SYSTEM_ONLINE",
-      })
-      .send();
+      });
   },
 };

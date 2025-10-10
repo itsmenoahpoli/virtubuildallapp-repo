@@ -1,18 +1,30 @@
 import { assessmentsRepository } from "@/database";
 
 export class AssessmentsService {
-	public async getByModule(moduleId: number) {
-		return assessmentsRepository.findOneBy({ moduleId });
+	public async getByLabActivity(labActivityId: number) {
+		return assessmentsRepository.find({ where: { labActivityId } });
 	}
 
-	public async upsert(moduleId: number, quiz: any) {
-		const existing = await this.getByModule(moduleId);
-		if (existing) {
-			await assessmentsRepository.update(existing.id, { quiz });
-			return assessmentsRepository.findOneBy({ id: existing.id });
-		}
-		const created = assessmentsRepository.create({ moduleId, quiz, isEnabled: true });
+	public async create(labActivityId: number, assessmentData: any) {
+		const created = assessmentsRepository.create({
+			labActivityId,
+			...assessmentData,
+			isEnabled: true
+		});
 		return assessmentsRepository.save(created);
+	}
+
+	public async update(id: number, assessmentData: any) {
+		await assessmentsRepository.update(id, assessmentData);
+		return assessmentsRepository.findOneBy({ id });
+	}
+
+	public async delete(id: number) {
+		return assessmentsRepository.delete(id);
+	}
+
+	public async getById(id: number) {
+		return assessmentsRepository.findOneBy({ id });
 	}
 }
 

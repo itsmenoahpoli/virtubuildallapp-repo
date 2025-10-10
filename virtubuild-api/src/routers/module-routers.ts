@@ -12,5 +12,4 @@ export { AdminRouter } from "@/modules/admin/admin.router";
 export { StudentGroupsRouter } from "@/modules/student-groups/student-groups.router";
 export { StudentProgressRouter } from "@/modules/student-progress/student-progress.router";
 export { SimulationsRouter } from "@/modules/simulations/simulations.router";
-export { GamificationRouter } from "@/modules/gamification/gamification.router";
 export { AssessmentSubmissionsRouter } from "@/modules/assessment-submissions/assessment-submissions.router";

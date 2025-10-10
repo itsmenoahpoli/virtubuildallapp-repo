@@ -27,7 +27,6 @@ exports.SystemController = {
             .status(types_1.HttpStatusCode.OK)
             .json({
             message: "SYSTEM_ONLINE",
-        })
-            .send();
+        });
     },
 };

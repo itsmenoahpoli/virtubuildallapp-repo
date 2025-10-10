@@ -10,7 +10,6 @@ export { StudentGroup } from "./student-group.entity";
 export { StudentGroupAssignment } from "./student-group-assignment.entity";
 export { StudentProgress } from "./student-progress.entity";
 export { Simulation } from "./simulation.entity";
-export { Gamification } from "./gamification.entity";
 export { ModulePrerequisite } from "./module-prerequisite.entity";
 export { AssessmentSubmission } from "./assessment-submission.entity";
 export { AuditLog } from "./audit-log.entity";

@@ -1,0 +1,143 @@
+<div class="assessments-container">
+    <div class="page-header">
+      <h1>Assessment Management</h1>
+      <button class="btn btn-primary" [routerLink]="['/admin/contents/assessments/create']">
+        <span class="btn-icon">➕</span>
+        Create New Assessment
+      </button>
+    </div>
+
+    <div class="content" *ngIf="!loading">
+      <div class="assessments-grid">
+        <div class="assessment-card" *ngFor="let assessment of assessments">
+          <div class="assessment-header">
+            <h3>{{ assessment.title }}</h3>
+            <div class="assessment-actions">
+              <button class="btn btn-sm btn-secondary" (click)="viewAssessment(assessment)">
+                <span class="btn-icon">👁️</span>
+                View
+              </button>
+              <button class="btn btn-sm btn-secondary" (click)="editAssessment(assessment)">
+                <span class="btn-icon">✏️</span>
+                Edit
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="deleteAssessment(assessment.id)">
+                <span class="btn-icon">🗑️</span>
+                Delete
+              </button>
+            </div>
+          </div>
+          <div class="assessment-content">
+            <p class="assessment-description">{{ assessment.description }}</p>
+            <div class="assessment-stats">
+              <span class="stat">
+                <span class="stat-label">Status:</span>
+                <span class="status-badge" [class]="assessment.isEnabled ? 'active' : 'inactive'">
+                  {{ assessment.isEnabled ? 'Active' : 'Inactive' }}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- View Assessment Modal -->
+    <div class="modal-overlay" *ngIf="showViewModal && selectedAssessment">
+      <div class="modal-content view-modal">
+        <div class="modal-header">
+          <h2>{{ selectedAssessment.title }}</h2>
+          <button class="close-btn" (click)="closeViewModal()">×</button>
+        </div>
+        
+        <div class="modal-body">
+          <!-- Assessment Details -->
+          <div class="assessment-details">
+            <h3>Assessment Details</h3>
+            <div class="details-grid">
+              <div class="detail-item">
+                <label>Description:</label>
+                <p>{{ selectedAssessment.description || 'No description provided' }}</p>
+              </div>
+              <div class="detail-item">
+                <label>Time Limit:</label>
+                <p>{{ selectedAssessment.timeLimitMinutes || 30 }} minutes</p>
+              </div>
+              <div class="detail-item">
+                <label>Status:</label>
+                <span class="status-badge" [class]="selectedAssessment.isEnabled ? 'active' : 'inactive'">
+                  {{ selectedAssessment.isEnabled ? 'Active' : 'Inactive' }}
+                </span>
+              </div>
+              <div class="detail-item">
+                <label>Created:</label>
+                <p>{{ selectedAssessment.createdAt | date:'medium' }}</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submissions Section -->
+          <div class="submissions-section">
+            <div class="section-header">
+              <h3>Student Submissions</h3>
+              <button class="btn btn-sm btn-secondary" (click)="refreshSubmissions()">
+                <span class="btn-icon">🔄</span>
+                Refresh
+              </button>
+            </div>
+            
+            <div class="submissions-list" *ngIf="assessmentSubmissions.length > 0; else noSubmissions">
+              <div class="submission-item" *ngFor="let submission of assessmentSubmissions">
+                <div class="submission-header">
+                  <div class="student-info">
+                    <h4>{{ submission.student?.firstName }} {{ submission.student?.lastName }}</h4>
+                    <p class="student-email">{{ submission.student?.email }}</p>
+                  </div>
+                  <div class="submission-score">
+                    <span class="score-badge" [class]="getScoreClass(submission.score)">
+                      {{ submission.score }}%
+                    </span>
+                  </div>
+                </div>
+                <div class="submission-details">
+                  <div class="detail-row">
+                    <span class="label">Submitted:</span>
+                    <span>{{ submission.submittedAt | date:'medium' }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Time Spent:</span>
+                    <span>{{ formatTimeSpent(submission.timeSpentSeconds) }}</span>
+                  </div>
+                  <div class="detail-row">
+                    <span class="label">Status:</span>
+                    <span class="status-badge" [class]="submission.isSubmitted ? 'active' : 'inactive'">
+                      {{ submission.isSubmitted ? 'Completed' : 'In Progress' }}
+                    </span>
+                  </div>
+                </div>
+                <div class="submission-actions">
+                  <button class="btn btn-sm btn-secondary" (click)="viewSubmissionDetails(submission)">
+                    <span class="btn-icon">👁️</span>
+                    View Details
+                  </button>
+                  <button class="btn btn-sm btn-secondary" (click)="provideFeedback(submission)">
+                    <span class="btn-icon">💬</span>
+                    Feedback
+                  </button>
+                </div>
+              </div>
+            </div>
+            
+            <ng-template #noSubmissions>
+              <div class="no-submissions">
+                <div class="no-submissions-icon">📝</div>
+                <h4>No submissions yet</h4>
+                <p>Students haven't submitted this assessment yet.</p>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+</div>

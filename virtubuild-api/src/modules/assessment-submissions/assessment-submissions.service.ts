@@ -70,7 +70,7 @@ export class AssessmentSubmissionsService {
 		return submissions.map(submission => ({
 			id: submission.id,
 			assessmentId: submission.assessmentId,
-			assessmentTitle: submission.assessment.quiz?.title || "Assessment",
+			assessmentTitle: submission.assessment.title || "Assessment",
 			score: submission.score,
 			timeSpent: submission.timeSpentSeconds,
 			isSubmitted: submission.isSubmitted,

@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { SystemRouter, AuthRouter, UsersRouter, UserRolesRouter, ModulesRouter, ActivitiesRouter, AssessmentsRouter, GradesRouter, AnalyticsRouter, ActivationsRouter, AdminRouter, StudentGroupsRouter, StudentProgressRouter, SimulationsRouter, GamificationRouter, AssessmentSubmissionsRouter } from "./module-routers";
+import { SystemRouter, AuthRouter, UsersRouter, UserRolesRouter, ModulesRouter, ActivitiesRouter, AssessmentsRouter, GradesRouter, AnalyticsRouter, ActivationsRouter, AdminRouter, StudentGroupsRouter, StudentProgressRouter, SimulationsRouter, AssessmentSubmissionsRouter } from "./module-routers";
 import { SETTINGS } from "@/configs";
 import { AppEnvironments } from "@/types";
 
@@ -59,10 +59,6 @@ const routesConfig = [
   {
     uri: "/simulations",
     router: new SimulationsRouter().routerRoutes,
-  },
-  {
-    uri: "/gamification",
-    router: new GamificationRouter().routerRoutes,
   },
   {
     uri: "/assessment-submissions",

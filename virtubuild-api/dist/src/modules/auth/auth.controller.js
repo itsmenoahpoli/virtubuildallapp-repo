@@ -58,7 +58,7 @@ class AuthController extends base_controller_1.BaseController {
     async signinHandler(request, response, next) {
         const result = await this.authService.signinAccount(request.body);
         if (!result) {
-            this.sendHttpResponse(response, types_1.HttpErrorTypes.UNAUTHORIZED_ERROR, types_1.HttpStatusCode.UNAUTHORIZED);
+            return this.sendHttpResponse(response, types_1.HttpErrorTypes.UNAUTHORIZED_ERROR, types_1.HttpStatusCode.UNAUTHORIZED);
         }
         this.sendHttpResponse(response, result, types_1.HttpStatusCode.OK);
     }
@@ -92,7 +92,7 @@ class AuthController extends base_controller_1.BaseController {
     async signupHandler(request, response, next) {
         const result = await this.authService.signupAccount(request.body);
         if (result.accountExists) {
-            this.sendHttpResponse(response, types_1.HttpErrorTypes.ALREADY_EXISTS, types_1.HttpStatusCode.UNPROCESSABLE_ENTITY);
+            return this.sendHttpResponse(response, types_1.HttpErrorTypes.ALREADY_EXISTS, types_1.HttpStatusCode.UNPROCESSABLE_ENTITY);
         }
         this.sendHttpResponse(response, result, types_1.HttpStatusCode.CREATED);
     }

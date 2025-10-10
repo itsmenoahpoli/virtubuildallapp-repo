@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SystemSettings = exports.NotificationPreference = exports.Notification = exports.AuditLog = exports.AssessmentSubmission = exports.ModulePrerequisite = exports.Gamification = exports.Simulation = exports.StudentProgress = exports.StudentGroupAssignment = exports.StudentGroup = exports.ModuleActivation = exports.PerformanceAnalytics = exports.Grade = exports.Assessment = exports.LabActivity = exports.Module = exports.UserRole = exports.User = void 0;
+exports.SystemSettings = exports.NotificationPreference = exports.Notification = exports.AuditLog = exports.AssessmentSubmission = exports.ModulePrerequisite = exports.Simulation = exports.StudentProgress = exports.StudentGroupAssignment = exports.StudentGroup = exports.ModuleActivation = exports.PerformanceAnalytics = exports.Grade = exports.Assessment = exports.LabActivity = exports.Module = exports.UserRole = exports.User = void 0;
 var user_entity_1 = require("./user.entity");
 Object.defineProperty(exports, "User", { enumerable: true, get: function () { return user_entity_1.User; } });
 var user_role_entity_1 = require("./user-role.entity");
@@ -25,8 +25,6 @@ var student_progress_entity_1 = require("./student-progress.entity");
 Object.defineProperty(exports, "StudentProgress", { enumerable: true, get: function () { return student_progress_entity_1.StudentProgress; } });
 var simulation_entity_1 = require("./simulation.entity");
 Object.defineProperty(exports, "Simulation", { enumerable: true, get: function () { return simulation_entity_1.Simulation; } });
-var gamification_entity_1 = require("./gamification.entity");
-Object.defineProperty(exports, "Gamification", { enumerable: true, get: function () { return gamification_entity_1.Gamification; } });
 var module_prerequisite_entity_1 = require("./module-prerequisite.entity");
 Object.defineProperty(exports, "ModulePrerequisite", { enumerable: true, get: function () { return module_prerequisite_entity_1.ModulePrerequisite; } });
 var assessment_submission_entity_1 = require("./assessment-submission.entity");

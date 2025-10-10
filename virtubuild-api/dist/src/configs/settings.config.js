@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.APP_SENTRY_DSN = exports.APP_DB_DATABASE = exports.APP_DB_PASSWORD = exports.APP_DB_USERNAME = exports.APP_DB_PORT = exports.APP_DB_HOST = exports.APP_URL = exports.APP_ENV = exports.APP_PORT = exports.APP_DB_TYPE = exports.APP_JWT_SECRET_KEY = exports.APP_SECRET_KEY = exports.checkCurrentEnvironment = void 0;
+exports.APP_CORS_ORIGIN = exports.APP_SENTRY_DSN = exports.APP_DB_DATABASE = exports.APP_DB_PASSWORD = exports.APP_DB_USERNAME = exports.APP_DB_PORT = exports.APP_DB_HOST = exports.APP_URL = exports.APP_ENV = exports.APP_PORT = exports.APP_DB_TYPE = exports.APP_JWT_SECRET_KEY = exports.APP_SECRET_KEY = exports.checkCurrentEnvironment = void 0;
 const dotenv_1 = __importDefault(require("dotenv"));
 const types_1 = require("../types");
 dotenv_1.default.config();
@@ -31,6 +31,8 @@ const APP_DB_DATABASE = process.env.APP_DB_DATABASE;
 exports.APP_DB_DATABASE = APP_DB_DATABASE;
 const APP_SENTRY_DSN = process.env.APP_SENTRY_DSN;
 exports.APP_SENTRY_DSN = APP_SENTRY_DSN;
+const APP_CORS_ORIGIN = process.env.CORS_ORIGIN || "http://localhost:4200";
+exports.APP_CORS_ORIGIN = APP_CORS_ORIGIN;
 const checkCurrentEnvironment = (environment) => {
     return APP_ENV === environment;
 };

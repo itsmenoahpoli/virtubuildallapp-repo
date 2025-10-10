@@ -64,7 +64,7 @@ export class AuthController extends BaseController {
     );
 
     if (!result) {
-      this.sendHttpResponse(
+      return this.sendHttpResponse(
         response,
         HttpErrorTypes.UNAUTHORIZED_ERROR,
         HttpStatusCode.UNAUTHORIZED
@@ -112,7 +112,7 @@ export class AuthController extends BaseController {
     );
 
     if (result.accountExists) {
-      this.sendHttpResponse(
+      return this.sendHttpResponse(
         response,
         HttpErrorTypes.ALREADY_EXISTS,
         HttpStatusCode.UNPROCESSABLE_ENTITY

@@ -13,9 +13,11 @@ exports.User = void 0;
 require("reflect-metadata");
 const typeorm_1 = require("typeorm");
 const shared_entity_1 = require("./shared.entity");
+const user_role_entity_1 = require("./user-role.entity");
 let User = class User extends shared_entity_1.DateFieldsEntity {
     id;
     userRoleId;
+    userRole;
     firstName;
     middleName;
     lastName;
@@ -45,6 +47,11 @@ __decorate([
     }),
     __metadata("design:type", Number)
 ], User.prototype, "userRoleId", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(() => user_role_entity_1.UserRole, { nullable: true }),
+    (0, typeorm_1.JoinColumn)({ name: 'userRoleId' }),
+    __metadata("design:type", user_role_entity_1.UserRole)
+], User.prototype, "userRole", void 0);
 __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)

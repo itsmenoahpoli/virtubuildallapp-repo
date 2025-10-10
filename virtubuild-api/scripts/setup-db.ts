@@ -16,7 +16,7 @@ async function setupDatabase() {
     
     console.log("✅ Database setup completed successfully!");
     console.log("🎉 Your database is ready to use!");
-    
+    process.exit(0);
   } catch (error) {
     console.error("❌ Database setup failed:", error);
     process.exit(1);

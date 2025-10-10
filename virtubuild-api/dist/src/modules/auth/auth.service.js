@@ -29,6 +29,15 @@ class AuthService {
         const authToken = jsonwebtoken_1.default.sign({ user: { ...user, roleName } }, configs_1.SETTINGS.APP_JWT_SECRET_KEY, { expiresIn: "1h" });
         return {
             authToken,
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.firstName + (user.middleName ? ' ' + user.middleName : '') + ' ' + user.lastName,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                roleName: roleName,
+                avatar: null
+            }
         };
     }
     async signupAccount(accountData) {

@@ -3,7 +3,7 @@ import { UsersService } from "@/modules/users/users.service";
 import { RequestOtp, type SigninCredentials, type SignupData } from "./auth.dto";
 import { verifyPassword } from "@/utils";
 import { SETTINGS } from "@/configs";
-import { userRolesRepository } from "@/database";
+import { userRolesRepository, UserEntity } from "@/database";
 
 export class AuthService {
 	public usersService: UsersService;
@@ -13,7 +13,7 @@ export class AuthService {
 	}
 
 	public async signinAccount(credentials: SigninCredentials) {
-		const user = await this.usersService.findByEmail(credentials.email);
+		const user = await this.usersService.findByEmail(credentials.email) as UserEntity | null;
 		const isPasswordVerified = user ? await verifyPassword(credentials.password, user?.password) : false;
 
 		if (!user || !isPasswordVerified) {
@@ -30,6 +30,15 @@ export class AuthService {
 
 		return {
 			authToken,
+			user: {
+				id: user.id,
+				email: user.email,
+				name: user.firstName + (user.middleName ? ' ' + user.middleName : '') + ' ' + user.lastName,
+				firstName: user.firstName,
+				lastName: user.lastName,
+				roleName: roleName,
+				avatar: null
+			}
 		};
 	}
 

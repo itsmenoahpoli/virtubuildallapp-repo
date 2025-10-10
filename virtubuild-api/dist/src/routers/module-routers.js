@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AssessmentSubmissionsRouter = exports.GamificationRouter = exports.SimulationsRouter = exports.StudentProgressRouter = exports.StudentGroupsRouter = exports.AdminRouter = exports.ActivationsRouter = exports.AnalyticsRouter = exports.GradesRouter = exports.AssessmentsRouter = exports.ActivitiesRouter = exports.ModulesRouter = exports.UserRolesRouter = exports.UsersRouter = exports.AuthRouter = exports.SystemRouter = void 0;
+exports.AssessmentSubmissionsRouter = exports.SimulationsRouter = exports.StudentProgressRouter = exports.StudentGroupsRouter = exports.AdminRouter = exports.ActivationsRouter = exports.AnalyticsRouter = exports.GradesRouter = exports.AssessmentsRouter = exports.ActivitiesRouter = exports.ModulesRouter = exports.UserRolesRouter = exports.UsersRouter = exports.AuthRouter = exports.SystemRouter = void 0;
 var system_router_1 = require("../modules/system/system.router");
 Object.defineProperty(exports, "SystemRouter", { enumerable: true, get: function () { return system_router_1.SystemRouter; } });
 var auth_router_1 = require("../modules/auth/auth.router");
@@ -29,7 +29,5 @@ var student_progress_router_1 = require("../modules/student-progress/student-pro
 Object.defineProperty(exports, "StudentProgressRouter", { enumerable: true, get: function () { return student_progress_router_1.StudentProgressRouter; } });
 var simulations_router_1 = require("../modules/simulations/simulations.router");
 Object.defineProperty(exports, "SimulationsRouter", { enumerable: true, get: function () { return simulations_router_1.SimulationsRouter; } });
-var gamification_router_1 = require("../modules/gamification/gamification.router");
-Object.defineProperty(exports, "GamificationRouter", { enumerable: true, get: function () { return gamification_router_1.GamificationRouter; } });
 var assessment_submissions_router_1 = require("../modules/assessment-submissions/assessment-submissions.router");
 Object.defineProperty(exports, "AssessmentSubmissionsRouter", { enumerable: true, get: function () { return assessment_submissions_router_1.AssessmentSubmissionsRouter; } });

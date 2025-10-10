@@ -20,13 +20,20 @@ exports.app = app;
 let server;
 app.use(express_1.default.static("public"));
 app.use(express_1.default.json());
-app.use((0, cors_1.default)());
+const corsOrigin = process.env.CORS_ORIGIN || "*";
+const corsOptions = {
+    origin: corsOrigin === "*" ? true : corsOrigin.split(",").map((o) => o.trim()),
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
+    credentials: true,
+    optionsSuccessStatus: 204,
+};
+app.use((0, cors_1.default)(corsOptions));
+app.options("*", (0, cors_1.default)(corsOptions));
 app.disable("powered-by");
 (0, middlewares_1.initializeMiddlewares)(app);
-app.use("/api-docs", swagger_config_1.swaggerUi.serve, swagger_config_1.swaggerUi.setup(swagger_config_1.swaggerSpec, swagger_config_1.swaggerUiOptions));
-(0, routers_1.initializeApiRoutes)(app);
-(0, database_1.initializeDatabase)();
 app.use(middlewares_1.GlobalErrorHandlerMiddleware);
+app.use("/api-docs", swagger_config_1.swaggerUi.serve, swagger_config_1.swaggerUi.setup(swagger_config_1.swaggerSpec, swagger_config_1.swaggerUiOptions));
 const gracefulShutdown = (signal) => {
     console.log(`\n[SHUTDOWN]: Received ${signal}. Starting graceful shutdown...`);
     if (server) {
@@ -70,18 +77,31 @@ process.on('unhandledRejection', (reason, promise) => {
     console.error(`[ERROR]: Unhandled Rejection at:`, promise, 'reason:', reason);
     gracefulShutdown('unhandledRejection');
 });
-const runApp = () => {
-    const appPort = configs_1.SETTINGS.APP_PORT;
-    if (!appPort) {
-        console.error(`[ERROR]: No app port specified from settings`);
-        return;
-    }
-    server = app.listen(appPort, "0.0.0.0", () => {
-        if (configs_1.SETTINGS.APP_ENV === types_1.AppEnvironments.DEV) {
-            console.info(`[APP]: App started and running in ${configs_1.SETTINGS.APP_URL}`);
-            console.info(`[SWAGGER]: API documentation available at ${configs_1.SETTINGS.APP_URL}/api-docs`);
-            console.info(`[INFO]: Press Ctrl+C to stop the server`);
+const runApp = async () => {
+    try {
+        // Initialize database first
+        console.info(`[INIT]: Initializing database...`);
+        await (0, database_1.initializeDatabase)();
+        console.info(`[INIT]: Database initialized successfully`);
+        // Then initialize routes
+        (0, routers_1.initializeApiRoutes)(app);
+        console.info(`[INIT]: API routes initialized`);
+        const appPort = configs_1.SETTINGS.APP_PORT;
+        if (!appPort) {
+            console.error(`[ERROR]: No app port specified from settings`);
+            return;
         }
-    });
+        server = app.listen(appPort, "0.0.0.0", () => {
+            if (configs_1.SETTINGS.APP_ENV === types_1.AppEnvironments.DEV) {
+                console.info(`[APP]: App started and running in ${configs_1.SETTINGS.APP_URL}`);
+                console.info(`[SWAGGER]: API documentation available at ${configs_1.SETTINGS.APP_URL}/api-docs`);
+                console.info(`[INFO]: Press Ctrl+C to stop the server`);
+            }
+        });
+    }
+    catch (error) {
+        console.error(`[ERROR]: Failed to initialize application:`, error);
+        throw error;
+    }
 };
 exports.runApp = runApp;

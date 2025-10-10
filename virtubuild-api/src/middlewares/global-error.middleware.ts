@@ -28,6 +28,10 @@ const getErrorData = (error: any) => {
 };
 
 export const ErrorHandlerMiddleware = (error: any, request: Request, response: Response, next: NextFunction) => {
+	if (response.headersSent) {
+		return next(error);
+	}
+
 	const { errCode, errType, errMessage, errTrace } = getErrorData(error);
 
 	response.status(errCode).json({

@@ -15,29 +15,57 @@ export class AssessmentsController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /assessments/module/{moduleId}:
+	 * /assessments/lab-activity/{labActivityId}:
 	 *   get:
-	 *     summary: Get post-lab assessment by module
+	 *     summary: Get assessments by lab activity
 	 *     tags: [Assessments]
 	 *     security:
 	 *       - BearerAuth: []
 	 */
-	public async getByModuleHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
-		const result = await this.assessmentsService.getByModule(+request.params.moduleId);
+	public async getByLabActivityHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.assessmentsService.getByLabActivity(+request.params.labActivityId);
 		return SendHttpResponse(response, result, HttpStatusCode.OK);
 	}
 
 	/**
 	 * @swagger
-	 * /assessments/module/{moduleId}:
-	 *   put:
-	 *     summary: Upsert post-lab assessment by module (instructor)
+	 * /assessments:
+	 *   post:
+	 *     summary: Create new assessment
 	 *     tags: [Assessments]
 	 *     security:
 	 *       - BearerAuth: []
 	 */
-	public async upsertHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
-		const result = await this.assessmentsService.upsert(+request.params.moduleId, request.body);
+	public async createHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.assessmentsService.create(request.body.labActivityId, request.body);
+		return SendHttpResponse(response, result, HttpStatusCode.CREATED);
+	}
+
+	/**
+	 * @swagger
+	 * /assessments/{id}:
+	 *   put:
+	 *     summary: Update assessment
+	 *     tags: [Assessments]
+	 *     security:
+	 *       - BearerAuth: []
+	 */
+	public async updateHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.assessmentsService.update(+request.params.id, request.body);
+		return SendHttpResponse(response, result, HttpStatusCode.OK);
+	}
+
+	/**
+	 * @swagger
+	 * /assessments/{id}:
+	 *   delete:
+	 *     summary: Delete assessment
+	 *     tags: [Assessments]
+	 *     security:
+	 *       - BearerAuth: []
+	 */
+	public async deleteHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.assessmentsService.delete(+request.params.id);
 		return SendHttpResponse(response, result, HttpStatusCode.OK);
 	}
 }

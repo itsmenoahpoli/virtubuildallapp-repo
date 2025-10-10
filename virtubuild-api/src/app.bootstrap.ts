@@ -38,16 +38,13 @@ app.disable("powered-by");
 
 initializeMiddlewares(app);
 
+app.use(GlobalErrorHandlerMiddleware);
+
 app.use(
   "/api-docs",
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, swaggerUiOptions)
 );
-
-initializeApiRoutes(app);
-initializeDatabase();
-
-app.use(GlobalErrorHandlerMiddleware);
 
 const gracefulShutdown = (signal: string) => {
   console.log(`\n[SHUTDOWN]: Received ${signal}. Starting graceful shutdown...`);
@@ -98,23 +95,37 @@ process.on('unhandledRejection', (reason, promise) => {
   gracefulShutdown('unhandledRejection');
 });
 
-const runApp = (): void => {
-  const appPort = SETTINGS.APP_PORT;
+const runApp = async (): Promise<void> => {
+  try {
+    // Initialize database first
+    console.info(`[INIT]: Initializing database...`);
+    await initializeDatabase();
+    console.info(`[INIT]: Database initialized successfully`);
+    
+    // Then initialize routes
+    initializeApiRoutes(app);
+    console.info(`[INIT]: API routes initialized`);
+    
+    const appPort = SETTINGS.APP_PORT;
 
-  if (!appPort) {
-    console.error(`[ERROR]: No app port specified from settings`);
-    return;
-  }
-
-  server = app.listen(appPort, "0.0.0.0", () => {
-    if (SETTINGS.APP_ENV === AppEnvironments.DEV) {
-      console.info(`[APP]: App started and running in ${SETTINGS.APP_URL}`);
-      console.info(
-        `[SWAGGER]: API documentation available at ${SETTINGS.APP_URL}/api-docs`
-      );
-      console.info(`[INFO]: Press Ctrl+C to stop the server`);
+    if (!appPort) {
+      console.error(`[ERROR]: No app port specified from settings`);
+      return;
     }
-  });
+
+    server = app.listen(appPort, "0.0.0.0", () => {
+      if (SETTINGS.APP_ENV === AppEnvironments.DEV) {
+        console.info(`[APP]: App started and running in ${SETTINGS.APP_URL}`);
+        console.info(
+          `[SWAGGER]: API documentation available at ${SETTINGS.APP_URL}/api-docs`
+        );
+        console.info(`[INFO]: Press Ctrl+C to stop the server`);
+      }
+    });
+  } catch (error) {
+    console.error(`[ERROR]: Failed to initialize application:`, error);
+    throw error;
+  }
 };
 
 export { runApp, app };

@@ -62,10 +62,6 @@ const routesConfig = [
         router: new module_routers_1.SimulationsRouter().routerRoutes,
     },
     {
-        uri: "/gamification",
-        router: new module_routers_1.GamificationRouter().routerRoutes,
-    },
-    {
         uri: "/assessment-submissions",
         router: new module_routers_1.AssessmentSubmissionsRouter().routerRoutes,
     },

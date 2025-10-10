@@ -1,4 +1,4 @@
-import { simulationsRepository, labActivitiesRepository, gamificationRepository } from "@/database";
+import { simulationsRepository, labActivitiesRepository } from "@/database";
 
 export class SimulationsService {
 	public async startSimulation(studentId: number, activityId: number) {
@@ -94,8 +94,6 @@ export class SimulationsService {
 			simulationState: finalState
 		});
 
-		await this.awardPoints(simulation.studentId, completionData.score);
-		
 		return updatedSimulation;
 	}
 
@@ -135,30 +133,6 @@ export class SimulationsService {
 		}));
 	}
 
-	private async awardPoints(studentId: number, score: number) {
-		const gamification = await gamificationRepository.findOne({
-			where: { studentId }
-		});
-
-		const pointsToAward = Math.floor(score / 10);
-		const newTotalPoints = (gamification?.totalPoints || 0) + pointsToAward;
-		const newLevel = Math.floor(newTotalPoints / 100) + 1;
-
-		if (gamification) {
-			await gamificationRepository.update(gamification.id, {
-				totalPoints: newTotalPoints,
-				level: newLevel,
-				activitiesCompleted: (gamification.activitiesCompleted || 0) + 1
-			});
-		} else {
-			await gamificationRepository.save({
-				studentId,
-				totalPoints: pointsToAward,
-				level: 1,
-				activitiesCompleted: 1
-			});
-		}
-	}
 
 	public async getSimulationComponents(activityId: number) {
 		const activity = await labActivitiesRepository.findOne({
@@ -172,7 +146,7 @@ export class SimulationsService {
 		return {
 			components: activity.componentsMetadata || [],
 			instructions: activity.description,
-			objectives: activity.gamification?.objectives || []
+			objectives: []
 		};
 	}
 }

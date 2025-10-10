@@ -98,30 +98,39 @@ export class LabActivityDataDTO implements LabActivity {
 	@IsObject()
 	componentsMetadata?: any;
 
-	@IsOptional()
-	@IsObject()
-	gamification?: any;
 
 	@IsOptional()
 	@IsBoolean()
 	isEnabled: boolean;
 }
 
-export class AssessmentDataDTO implements Assessment {
+export class AssessmentDataDTO implements Omit<Assessment, 'labActivity'> {
 	@IsNotEmpty()
 	@IsNumber()
-	moduleId: number;
+	labActivityId: number;
+
+	@IsNotEmpty()
+	@IsString()
+	title: string;
+
+	@IsOptional()
+	@IsString()
+	description?: string;
+
+	@IsNumber()
+	@Min(1)
+	@Max(180)
+	timeLimitMinutes: number;
 
 	@IsNotEmpty()
 	@IsObject()
-	quiz: any;
+	questions: any;
 
-	@IsOptional()
 	@IsBoolean()
 	isEnabled: boolean;
 }
 
-export class GradeDataDTO implements Grade {
+export class GradeDataDTO implements Omit<Grade, 'user' | 'activity'> {
 	@IsNotEmpty()
 	@IsNumber()
 	userId: number;
@@ -184,3 +193,4 @@ export class DashboardStatsDTO {
 	@IsString()
 	period?: string;
 }
+

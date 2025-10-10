@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 import { DateFieldsEntity } from "./shared.entity";
+import { UserRole } from "./user-role.entity";
 
 @Entity()
 export class User extends DateFieldsEntity {
@@ -11,6 +12,10 @@ export class User extends DateFieldsEntity {
 		nullable: true,
 	})
 	userRoleId?: number;
+
+	@ManyToOne(() => UserRole, { nullable: true })
+	@JoinColumn({ name: 'userRoleId' })
+	userRole?: UserRole;
 
 	@Column()
 	firstName: string;
