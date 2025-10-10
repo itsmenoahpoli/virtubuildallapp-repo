@@ -162,3 +162,10 @@
 [2025-10-06T05:01:24.111Z] GET /api/modules 200 {}
 [2025-10-06T05:04:12.500Z] GET /api/modules 304 {}
 [2025-10-06T05:04:15.708Z] GET /api/modules 200 {}
+[2025-10-10T00:22:46.930Z] GET / 404 {}
+[2025-10-10T00:22:50.386Z] GET /api-docs/ 200 {}
+[2025-10-10T00:22:50.433Z] GET /api-docs/swagger-ui-init.js 200 {}
+[2025-10-10T00:22:50.438Z] GET /api-docs/swagger-ui.css 200 {}
+[2025-10-10T00:22:50.457Z] GET /api-docs/swagger-ui-standalone-preset.js 200 {}
+[2025-10-10T00:22:50.518Z] GET /api-docs/swagger-ui-bundle.js 200 {}
+[2025-10-10T00:22:50.642Z] GET /api-docs/favicon-16x16.png 200 {}
