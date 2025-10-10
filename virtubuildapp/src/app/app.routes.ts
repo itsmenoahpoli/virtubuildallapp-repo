@@ -100,6 +100,7 @@ export const routes: Routes = [
                 { path: 'laboratories', component: ManageLaboratoriesComponent },
                 { path: 'assessments', component: ManageAssessmentsComponent },
                 { path: 'assessments/create', component: CreateAssessmentComponent },
+                { path: 'assessments/edit/:id', component: CreateAssessmentComponent },
               ]
             },
     ],

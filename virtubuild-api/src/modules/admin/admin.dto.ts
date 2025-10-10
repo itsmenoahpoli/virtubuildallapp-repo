@@ -104,6 +104,7 @@ export class LabActivityDataDTO implements LabActivity {
 	isEnabled: boolean;
 }
 
+
 export class AssessmentDataDTO implements Omit<Assessment, 'labActivity'> {
 	@IsNotEmpty()
 	@IsNumber()

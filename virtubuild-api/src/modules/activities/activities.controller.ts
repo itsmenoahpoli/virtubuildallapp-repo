@@ -15,15 +15,15 @@ export class ActivitiesController extends BaseController {
 
 	/**
 	 * @swagger
-	 * /activities/module/{moduleId}:
+	 * /activities:
 	 *   get:
-	 *     summary: List activities by module
+	 *     summary: List all activities
 	 *     tags: [Activities]
 	 *     security:
 	 *       - BearerAuth: []
 	 */
-	public async listByModuleHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
-		const result = await this.activitiesService.listByModule(+request.params.moduleId);
+	public async listAllHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.activitiesService.listAll();
 		return SendHttpResponse(response, result, HttpStatusCode.OK);
 	}
 
@@ -38,6 +38,20 @@ export class ActivitiesController extends BaseController {
 	 */
 	public async getByIdHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
 		const result = await this.activitiesService.getById(+request.params.id);
+		return SendHttpResponse(response, result, HttpStatusCode.OK);
+	}
+
+	/**
+	 * @swagger
+	 * /activities/{id}:
+	 *   put:
+	 *     summary: Update activity by id
+	 *     tags: [Activities]
+	 *     security:
+	 *       - BearerAuth: []
+	 */
+	public async updateHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.activitiesService.update(+request.params.id, request.body);
 		return SendHttpResponse(response, result, HttpStatusCode.OK);
 	}
 }

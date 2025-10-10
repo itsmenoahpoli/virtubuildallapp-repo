@@ -572,6 +572,8 @@ export class AdminController extends BaseController {
 		}
 	}
 
+
+
 	public async getAllAssessments(req: Request, res: Response) {
 		try {
 			const assessments = await this.adminService.getAllAssessments();
@@ -593,6 +595,17 @@ export class AdminController extends BaseController {
 		} catch (error) {
 			console.error("Error getting assessment:", error);
 			this.sendHttpResponse(res, { error: "Failed to get assessment" }, HttpStatusCode.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	public async getAssessmentSubmissions(req: Request, res: Response) {
+		try {
+			const { id } = req.params;
+			const submissions = await this.adminService.getAssessmentSubmissions(parseInt(id));
+			this.sendHttpResponse(res, submissions);
+		} catch (error) {
+			console.error("Error getting assessment submissions:", error);
+			this.sendHttpResponse(res, { error: "Failed to get assessment submissions" }, HttpStatusCode.INTERNAL_SERVER_ERROR);
 		}
 	}
 

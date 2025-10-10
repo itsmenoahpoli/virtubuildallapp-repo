@@ -2,8 +2,9 @@ import {
 	usersRepository, 
 	userRolesRepository, 
 	modulesRepository, 
-	labActivitiesRepository, 
+	labActivitiesRepository,
 	assessmentsRepository, 
+	assessmentSubmissionsRepository,
 	gradesRepository, 
 	performanceAnalyticsRepository, 
 	moduleActivationsRepository,
@@ -12,6 +13,7 @@ import {
 	ModuleEntity,
 	LabActivityEntity,
 	AssessmentEntity,
+	AssessmentSubmissionEntity,
 	GradeEntity,
 	PerformanceAnalyticsEntity,
 	ModuleActivationEntity
@@ -164,11 +166,32 @@ export class AdminService {
 		return result.affected !== 0;
 	}
 
-	public async getAllAssessments(): Promise<AssessmentEntity[]> {
+
+	public async getAllAssessments(): Promise<any[]> {
 		try {
-			return await assessmentsRepository.find({
-				order: { createdAt: "DESC" }
+			const assessments = await assessmentsRepository.find({
+				order: { createdAt: "DESC" },
+				relations: ["assessmentSubmissions", "assessmentSubmissions.student"]
 			});
+
+			// Transform the data to include submission counts and basic submission info
+			return assessments.map(assessment => ({
+				...assessment,
+				submissionCount: assessment.assessmentSubmissions?.length || 0,
+				hasSubmissions: (assessment.assessmentSubmissions?.length || 0) > 0,
+				recentSubmissions: assessment.assessmentSubmissions?.slice(0, 3).map((sub: AssessmentSubmissionEntity) => ({
+					id: sub.id,
+					score: sub.score,
+					timeSpentSeconds: sub.timeSpentSeconds,
+					isSubmitted: sub.isSubmitted,
+					submittedAt: sub.submittedAt,
+					student: sub.student ? {
+						firstName: sub.student.firstName,
+						lastName: sub.student.lastName,
+						email: sub.student.email
+					} : null
+				})) || []
+			}));
 		} catch (error) {
 			console.error("Error fetching assessments:", error);
 			return [];
@@ -178,8 +201,42 @@ export class AdminService {
 	public async getAssessmentById(id: number): Promise<AssessmentEntity | null> {
 		return await assessmentsRepository.findOne({
 			where: { id },
-			relations: ["module"]
+			relations: ["labActivity"]
 		});
+	}
+
+	public async getAssessmentSubmissions(assessmentId: number): Promise<any[]> {
+		try {
+			const submissions = await assessmentSubmissionsRepository.find({
+				where: { assessmentId },
+				relations: ["student", "assessment"],
+				order: { submittedAt: "DESC" }
+			});
+
+			return submissions.map((submission: AssessmentSubmissionEntity) => ({
+				id: submission.id,
+				score: submission.score,
+				timeSpentSeconds: submission.timeSpentSeconds,
+				isSubmitted: submission.isSubmitted,
+				submittedAt: submission.submittedAt,
+				answers: submission.answers,
+				feedback: submission.feedback,
+				student: submission.student ? {
+					id: submission.student.id,
+					firstName: submission.student.firstName,
+					lastName: submission.student.lastName,
+					email: submission.student.email
+				} : null,
+				assessment: submission.assessment ? {
+					id: submission.assessment.id,
+					title: submission.assessment.title,
+					questions: submission.assessment.questions
+				} : null
+			}));
+		} catch (error) {
+			console.error("Error fetching assessment submissions:", error);
+			return [];
+		}
 	}
 
 	public async createAssessment(data: AssessmentDataDTO): Promise<AssessmentEntity> {

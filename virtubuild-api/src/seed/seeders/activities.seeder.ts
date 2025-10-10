@@ -1,122 +1,59 @@
-import { labActivitiesRepository, modulesRepository } from "@/database";
+import { labActivitiesRepository } from "@/database";
 
 export const seedActivities = async () => {
   console.log("Seeding lab activities...");
   
-  const modules = await modulesRepository.find();
-  
   const activities = [
     {
-      moduleTitle: "Introduction to Computer Hardware",
-      activities: [
-        {
-          title: "CPU Identification Lab",
-          description: "Identify different types of CPUs and their specifications",
-          isEnabled: true,
-        },
-        {
-          title: "Memory Module Recognition",
-          description: "Learn to identify RAM types and capacities",
-          isEnabled: true,
-        },
-        {
-          title: "Motherboard Component Mapping",
-          description: "Map out motherboard components and connections",
-          isEnabled: true,
-        }
-      ]
+      title: "Module 1: Introduction to tools/components (e.g., screwdrivers, CPUs).",
+      description: "- [ ] Identify tools on the table\n- [ ] Sort PC components (end of lab activity)",
+      location: "Lab Room 101",
+      capacity: "20 students",
+      equipment: {
+        tools: ["Screwdrivers", "Anti-static wrist straps", "Component trays"],
+        components: ["CPUs", "RAM modules", "Motherboards", "Storage devices", "Power supplies"],
+        workstations: 10
+      },
+      isEnabled: true
     },
     {
-      moduleTitle: "Desktop Assembly Fundamentals",
-      activities: [
-        {
-          title: "CPU Installation Simulation",
-          description: "Practice installing CPU with proper technique",
-          isEnabled: true,
-        },
-        {
-          title: "RAM Installation Challenge",
-          description: "Install memory modules in correct slots",
-          isEnabled: true,
-        },
-        {
-          title: "Power Supply Wiring",
-          description: "Connect all power cables correctly",
-          isEnabled: true,
-        }
-      ]
+      title: "Module 2: Desktop/laptop/motherboard assembly (includes UEFI interface simulation).",
+      description: "- [ ] Obtain Storage media (hard drive)\n- [ ] Connect PC to monitor\n- [ ] Boot PC into UEFI interface\n- [ ] Simulate OS loading (end of lab activity)",
+      location: "Lab Room 102",
+      capacity: "16 students",
+      equipment: {
+        tools: ["Screwdrivers", "Cable management tools", "Anti-static mats"],
+        components: ["Complete desktop PCs", "Laptops", "Monitors", "Storage media", "Cables"],
+        workstations: 8,
+        simulation: "UEFI Interface Simulator"
+      },
+      isEnabled: true
     },
     {
-      moduleTitle: "Laptop Disassembly and Repair",
-      activities: [
-        {
-          title: "Laptop Battery Removal",
-          description: "Safely remove laptop battery following proper procedures",
-          isEnabled: true,
-        },
-        {
-          title: "Keyboard Replacement",
-          description: "Replace laptop keyboard with new component",
-          isEnabled: true,
-        },
-        {
-          title: "Screen Assembly",
-          description: "Disassemble and reassemble laptop screen",
-          isEnabled: true,
-        }
-      ]
-    },
-    {
-      moduleTitle: "Network Hardware Configuration",
-      activities: [
-        {
-          title: "Router Configuration Lab",
-          description: "Configure wireless router settings",
-          isEnabled: true,
-        },
-        {
-          title: "Switch Setup Challenge",
-          description: "Set up network switch with VLANs",
-          isEnabled: true,
-        }
-      ]
-    },
-    {
-      moduleTitle: "Troubleshooting and Diagnostics",
-      activities: [
-        {
-          title: "Hardware Diagnostic Tools",
-          description: "Use diagnostic software to identify issues",
-          isEnabled: true,
-        },
-        {
-          title: "Performance Benchmarking",
-          description: "Run performance tests and analyze results",
-          isEnabled: true,
-        }
-      ]
+      title: "Module 3: Advanced tasks (e.g., processor installation, power systems).",
+      description: "- [ ] Obtain Motherboard\n- [ ] Obtain CPU, RAM and Storage Media\n- [ ] Assemble PC\n- [ ] Attach PC to Power Supply\n- [ ] Boot PC into UEFI Interface (end of lab activity)",
+      location: "Lab Room 103",
+      capacity: "12 students",
+      equipment: {
+        tools: ["Precision screwdrivers", "Thermal paste applicators", "Cable testers"],
+        components: ["High-end motherboards", "Latest CPUs", "DDR4/DDR5 RAM", "NVMe SSDs", "Modular PSUs"],
+        workstations: 6,
+        simulation: "Advanced Assembly Simulator"
+      },
+      isEnabled: true
     }
   ];
 
-  for (const moduleActivities of activities) {
-    const module = modules.find(m => m.title === moduleActivities.moduleTitle);
-    if (module) {
-      for (const activityData of moduleActivities.activities) {
-        const exists = await labActivitiesRepository.findOneBy({ 
-          title: activityData.title,
-          moduleId: module.id 
-        });
-        if (!exists) {
-          const activity = labActivitiesRepository.create({
-            ...activityData,
-            moduleId: module.id
-          });
-          await labActivitiesRepository.save(activity);
-          console.log(`Created activity: ${activityData.title} for module: ${module.title}`);
-        } else {
-          console.log(`Activity ${activityData.title} already exists for module: ${module.title}`);
-        }
-      }
+  for (const activityData of activities) {
+    const exists = await labActivitiesRepository.findOneBy({ 
+      title: activityData.title
+    });
+    if (!exists) {
+      const activity = labActivitiesRepository.create(activityData);
+      await labActivitiesRepository.save(activity);
+      console.log(`✅ Created lab activity: ${activityData.title}`);
+    } else {
+      console.log(`Lab activity ${activityData.title} already exists`);
     }
   }
 };

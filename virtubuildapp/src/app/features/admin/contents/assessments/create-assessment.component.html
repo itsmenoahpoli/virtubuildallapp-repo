@@ -4,7 +4,7 @@
       <span class="material-icons">arrow_back</span>
       Back to Assessments
     </button>
-    <h1>Create New Assessment</h1>
+    <h1>{{ pageTitle }}</h1>
   </div>
 
   <form [formGroup]="assessmentForm" (ngSubmit)="onSubmit()" class="assessment-form">
@@ -19,12 +19,12 @@
           [class.error]="assessmentForm.get('labActivityId')?.invalid && assessmentForm.get('labActivityId')?.touched"
         >
           <option value="">Select a lab activity</option>
-          <option *ngFor="let lab of labActivities" [value]="lab.id">
-            {{ lab.title }}
+          <option *ngFor="let activity of labActivities" [value]="activity.id">
+            {{ activity.title }}
           </option>
         </select>
         <div class="error-message" *ngIf="assessmentForm.get('labActivityId')?.invalid && assessmentForm.get('labActivityId')?.touched">
-          <span *ngIf="assessmentForm.get('labActivityId')?.errors?.['required']">Lab activity is required</span>
+          <span *ngIf="assessmentForm.get('labActivityId')?.errors?.['required']">Lab Activity is required</span>
         </div>
       </div>
 
@@ -221,7 +221,7 @@
       </button>
       <button type="submit" class="btn btn-primary" [disabled]="loading || !assessmentForm.valid">
         <span *ngIf="loading" class="spinner"></span>
-        {{ loading ? 'Creating...' : 'Create Assessment' }}
+        {{ loading ? (isEditMode ? 'Updating...' : 'Creating...') : (isEditMode ? 'Update Assessment' : 'Create Assessment') }}
       </button>
     </div>
   </form>

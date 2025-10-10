@@ -27,6 +27,9 @@ export class AssessmentSubmission extends DateFieldsEntity {
 	@Column({ type: "boolean", default: false })
 	isSubmitted: boolean;
 
+	@Column({ type: "timestamp", nullable: true })
+	submittedAt?: Date;
+
 	@Column({ type: "jsonb", nullable: true })
 	feedback?: any;
 

@@ -1,7 +1,8 @@
 import "reflect-metadata";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
 import { DateFieldsEntity } from "./shared.entity";
 import { LabActivity } from "./lab-activity.entity";
+import { AssessmentSubmission } from "./assessment-submission.entity";
 
 @Entity()
 export class Assessment extends DateFieldsEntity {
@@ -29,6 +30,9 @@ export class Assessment extends DateFieldsEntity {
 	@ManyToOne(() => LabActivity)
 	@JoinColumn({ name: 'labActivityId' })
 	labActivity?: LabActivity;
+
+	@OneToMany(() => AssessmentSubmission, submission => submission.assessment)
+	assessmentSubmissions?: AssessmentSubmission[];
 }
 
 

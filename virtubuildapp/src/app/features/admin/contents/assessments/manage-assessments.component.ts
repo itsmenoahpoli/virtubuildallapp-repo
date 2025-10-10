@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { AdminService } from '@/app/core/services';
+import { ModalService } from '@/app/shared/services/modal.service';
 
 @Component({
   selector: 'app-manage-assessments',
@@ -16,6 +17,13 @@ export class ManageAssessmentsComponent implements OnInit {
   showViewModal = false;
   selectedAssessment: any = null;
   assessmentSubmissions: any[] = [];
+  showSubmissionDetailsModal = false;
+  selectedSubmission: any = null;
+
+  constructor(
+    private router: Router,
+    private modalService: ModalService
+  ) {}
 
   async ngOnInit() {
     try {
@@ -31,8 +39,12 @@ export class ManageAssessmentsComponent implements OnInit {
     try {
       const assessments = await AdminService.getAllAssessments();
       
-      // If no data from API, provide sample data for demonstration
-      if (!assessments || assessments.length === 0) {
+      // The API now returns assessments with submission data included
+      if (assessments && assessments.length > 0) {
+        this.assessments = assessments;
+        console.log('Loaded assessments with submission data:', this.assessments);
+      } else {
+        // Fallback sample data if no assessments exist
         this.assessments = [
           {
             id: 1,
@@ -41,6 +53,9 @@ export class ManageAssessmentsComponent implements OnInit {
             isEnabled: true,
             createdAt: new Date(),
             moduleId: 1,
+            submissionCount: 0,
+            hasSubmissions: false,
+            recentSubmissions: [],
             quiz: {
               questions: [
                 {
@@ -61,6 +76,9 @@ export class ManageAssessmentsComponent implements OnInit {
             isEnabled: true,
             createdAt: new Date(),
             moduleId: 2,
+            submissionCount: 0,
+            hasSubmissions: false,
+            recentSubmissions: [],
             quiz: {
               questions: [
                 {
@@ -75,8 +93,6 @@ export class ManageAssessmentsComponent implements OnInit {
             }
           }
         ];
-      } else {
-        this.assessments = assessments;
       }
     } catch (error) {
       console.error('Error loading assessments:', error);
@@ -88,7 +104,10 @@ export class ManageAssessmentsComponent implements OnInit {
           description: "Test basic computer hardware knowledge",
           isEnabled: true,
           createdAt: new Date(),
-          moduleId: 1
+          moduleId: 1,
+          submissionCount: 0,
+          hasSubmissions: false,
+          recentSubmissions: []
         }
       ];
     }
@@ -106,36 +125,16 @@ export class ManageAssessmentsComponent implements OnInit {
     this.assessmentSubmissions = [];
   }
 
+  closeSubmissionDetailsModal() {
+    this.showSubmissionDetailsModal = false;
+    this.selectedSubmission = null;
+  }
+
   async loadAssessmentSubmissions(assessmentId: number) {
     try {
-      // For now, we'll use mock data since we don't have a specific endpoint
-      // In a real implementation, you would call AdminService.getAssessmentSubmissions(assessmentId)
-      this.assessmentSubmissions = [
-        {
-          id: 1,
-          score: 85,
-          timeSpentSeconds: 1200,
-          isSubmitted: true,
-          submittedAt: new Date(),
-          student: {
-            firstName: 'John',
-            lastName: 'Doe',
-            email: 'john.doe@example.com'
-          }
-        },
-        {
-          id: 2,
-          score: 92,
-          timeSpentSeconds: 900,
-          isSubmitted: true,
-          submittedAt: new Date(Date.now() - 86400000),
-          student: {
-            firstName: 'Jane',
-            lastName: 'Smith',
-            email: 'jane.smith@example.com'
-          }
-        }
-      ];
+      const submissions = await AdminService.getAssessmentSubmissions(assessmentId);
+      this.assessmentSubmissions = submissions || [];
+      console.log('Loaded assessment submissions:', this.assessmentSubmissions);
     } catch (error) {
       console.error('Error loading assessment submissions:', error);
       this.assessmentSubmissions = [];
@@ -162,8 +161,8 @@ export class ManageAssessmentsComponent implements OnInit {
   }
 
   viewSubmissionDetails(submission: any) {
-    console.log('View submission details:', submission);
-    // Implement detailed submission view
+    this.selectedSubmission = submission;
+    this.showSubmissionDetailsModal = true;
   }
 
   provideFeedback(submission: any) {
@@ -171,19 +170,83 @@ export class ManageAssessmentsComponent implements OnInit {
     // Implement feedback functionality
   }
 
-  editAssessment(assessment: any) {
-    // Navigate to edit page - for now just log
-    console.log('Edit assessment:', assessment);
+  getAnswersArray(submission: any): any[] {
+    if (!submission || !submission.answers) {
+      return [];
+    }
+    
+    const answers = submission.answers;
+    const questions = submission.assessment?.questions;
+    
+    if (!questions) {
+      // Fallback: return answers as-is if no questions available
+      if (Array.isArray(answers)) {
+        return answers;
+      }
+      if (typeof answers === 'object') {
+        return Object.values(answers);
+      }
+      return [];
+    }
+    
+    // Merge questions with student answers
+    const questionsArray = Array.isArray(questions) ? questions : Object.values(questions);
+    
+    return questionsArray.map((question: any, index: number) => {
+      const studentAnswer = answers[question.id] || answers[index] || null;
+      
+      return {
+        ...question,
+        selectedAnswer: studentAnswer,
+        studentAnswer: studentAnswer
+      };
+    });
   }
 
-  async deleteAssessment(id: number) {
-    if (confirm('Are you sure you want to delete this assessment?')) {
-      try {
-        await AdminService.deleteAssessment(id);
-        await this.loadAssessments();
-      } catch (error) {
-        console.error('Error deleting assessment:', error);
-      }
+  getOptionLabel(index: number): string {
+    return String.fromCharCode(65 + index);
+  }
+
+  editAssessment(assessment: any) {
+    this.router.navigate(['/admin/contents/assessments/edit', assessment.id]);
+  }
+
+
+  deleteAssessment(assessment: any) {
+    // Check if assessment has submissions
+    if (assessment.hasSubmissions) {
+      const submissionCount = assessment.submissionCount || 0;
+      this.modalService.confirmDelete(
+        'Cannot Delete Assessment',
+        `Cannot delete this assessment. It has ${submissionCount} student submission(s). Please remove all submissions first.`,
+        assessment.title,
+        () => {
+          // Do nothing - just show the message
+        }
+      );
+      return;
+    }
+
+    this.modalService.confirmDelete(
+      'Delete Assessment',
+      'Are you sure you want to delete this assessment? This action cannot be undone.',
+      assessment.title,
+      () => this.performDeleteAssessment(assessment.id)
+    );
+  }
+
+  private async performDeleteAssessment(id: number) {
+    try {
+      await AdminService.deleteAssessment(id);
+      await this.loadAssessments();
+      this.modalService.showDeleteSuccess('Assessment');
+    } catch (error) {
+      console.error('Error deleting assessment:', error);
+      this.modalService.showSuccess({
+        title: 'Delete Failed',
+        message: 'Failed to delete assessment. Please try again.',
+        icon: 'error'
+      });
     }
   }
 

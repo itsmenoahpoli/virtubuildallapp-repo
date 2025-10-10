@@ -17,8 +17,9 @@ export class ActivitiesRouter {
 	}
 
 	private initializeRoutes() {
-		this.router.get("/module/:moduleId", CheckAuthMiddleware, this.controller.listByModuleHandler);
+		this.router.get("/", CheckAuthMiddleware, this.controller.listAllHandler);
 		this.router.get("/:id", CheckAuthMiddleware, this.controller.getByIdHandler);
+		this.router.put("/:id", CheckAuthMiddleware, this.controller.updateHandler);
 	}
 }
 

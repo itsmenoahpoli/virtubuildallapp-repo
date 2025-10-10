@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { AdminService } from '@/app/core/services';
 
 @Component({
@@ -15,10 +15,14 @@ export class CreateAssessmentComponent implements OnInit {
   assessmentForm: FormGroup;
   loading = false;
   labActivities: any[] = [];
+  isEditMode = false;
+  assessmentId: number | null = null;
+  pageTitle = 'Create New Assessment';
 
   constructor(
     private fb: FormBuilder,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.assessmentForm = this.fb.group({
       labActivityId: [null, [Validators.required]],
@@ -31,10 +35,20 @@ export class CreateAssessmentComponent implements OnInit {
   }
 
   async ngOnInit() {
+    // Check if we're in edit mode
+    this.assessmentId = this.route.snapshot.paramMap.get('id') ? +this.route.snapshot.paramMap.get('id')! : null;
+    this.isEditMode = !!this.assessmentId;
+    this.pageTitle = this.isEditMode ? 'Edit Assessment' : 'Create New Assessment';
+
     // Load lab activities
     await this.loadLabActivities();
-    // Add initial question
-    this.addQuestion();
+    
+    if (this.isEditMode && this.assessmentId) {
+      await this.loadAssessmentData();
+    } else {
+      // Add initial question for create mode
+      this.addQuestion();
+    }
   }
 
   async loadLabActivities() {
@@ -43,6 +57,51 @@ export class CreateAssessmentComponent implements OnInit {
     } catch (error) {
       console.error('Error loading lab activities:', error);
       this.labActivities = [];
+    }
+  }
+
+  async loadAssessmentData() {
+    if (!this.assessmentId) return;
+    
+    try {
+      this.loading = true;
+      console.log('Loading assessment data for ID:', this.assessmentId);
+      const assessment = await AdminService.getAssessmentById(this.assessmentId);
+      console.log('Loaded assessment:', assessment);
+      
+      if (assessment) {
+        // Populate form with existing assessment data
+        this.assessmentForm.patchValue({
+          labActivityId: assessment.labActivityId,
+          title: assessment.title,
+          description: assessment.description || '',
+          timeLimitMinutes: assessment.timeLimitMinutes || 45,
+          isEnabled: assessment.isEnabled
+        });
+
+        console.log('Form patched with basic data');
+
+        // Clear existing questions
+        this.questionsArray.clear();
+
+        // Load questions if they exist
+        if (assessment.questions && Array.isArray(assessment.questions)) {
+          console.log('Loading questions:', assessment.questions);
+          assessment.questions.forEach((question: any) => {
+            this.addQuestionFromData(question);
+          });
+        } else {
+          console.log('No questions found, adding default question');
+          // If no questions, add a default one
+          this.addQuestion();
+        }
+      } else {
+        console.log('No assessment found with ID:', this.assessmentId);
+      }
+    } catch (error) {
+      console.error('Error loading assessment data:', error);
+    } finally {
+      this.loading = false;
     }
   }
 
@@ -82,6 +141,42 @@ export class CreateAssessmentComponent implements OnInit {
     optionsArray.push(this.createOptionForm('Option 2', false));
     optionsArray.push(this.createOptionForm('Option 3', false));
     optionsArray.push(this.createOptionForm('Option 4', false));
+  }
+
+  addQuestionFromData(questionData: any) {
+    console.log('Adding question from data:', questionData);
+    const questionForm = this.createQuestionForm();
+    questionForm.patchValue({
+      questionText: questionData.question || questionData.questionText || '',
+      questionType: questionData.type || questionData.questionType || 'multiple_choice',
+      correctAnswer: questionData.correctAnswer || questionData.correctAnswerIndex || 0,
+      points: questionData.points || 15,
+      explanation: questionData.explanation || ''
+    });
+
+    console.log('Question form patched with:', questionForm.value);
+    this.questionsArray.push(questionForm);
+
+    // Add options from data
+    const optionsArray = questionForm.get('options') as FormArray;
+    optionsArray.clear();
+
+    if (questionData.options && Array.isArray(questionData.options)) {
+      console.log('Adding options from data:', questionData.options);
+      questionData.options.forEach((option: any, index: number) => {
+        const isCorrect = questionData.correctAnswer === index || 
+                         questionData.correctAnswerIndex === index ||
+                         option.isCorrect === true;
+        optionsArray.push(this.createOptionForm(option.value || option.text || `Option ${index + 1}`, isCorrect));
+      });
+    } else {
+      console.log('No options found, using defaults');
+      // Default options if none provided
+      optionsArray.push(this.createOptionForm('Option 1', true));
+      optionsArray.push(this.createOptionForm('Option 2', false));
+      optionsArray.push(this.createOptionForm('Option 3', false));
+      optionsArray.push(this.createOptionForm('Option 4', false));
+    }
   }
 
   removeQuestion(index: number) {
@@ -137,30 +232,40 @@ export class CreateAssessmentComponent implements OnInit {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
     if (this.assessmentForm.valid) {
       this.loading = true;
       
-      // Process the form data
-      const assessmentData = {
-        ...this.assessmentForm.value,
-        questions: this.assessmentForm.value.questions.map((q: any) => ({
-          ...q,
-          options: q.options.map((opt: any, index: number) => ({
-            ...opt,
-            order: index + 1
+      try {
+        // Process the form data
+        const assessmentData = {
+          ...this.assessmentForm.value,
+          questions: this.assessmentForm.value.questions.map((q: any) => ({
+            ...q,
+            options: q.options.map((opt: any, index: number) => ({
+              ...opt,
+              order: index + 1
+            }))
           }))
-        }))
-      };
+        };
 
-      // Here you would call your API to save the assessment
-      console.log('Assessment data:', assessmentData);
-      
-      // Simulate API call
-      setTimeout(() => {
-        this.loading = false;
+        if (this.isEditMode && this.assessmentId) {
+          // Update existing assessment
+          await AdminService.updateAssessment(this.assessmentId, assessmentData);
+          console.log('Assessment updated successfully');
+        } else {
+          // Create new assessment
+          await AdminService.createAssessment(assessmentData);
+          console.log('Assessment created successfully');
+        }
+
         this.router.navigate(['/admin/contents/assessments']);
-      }, 1000);
+      } catch (error) {
+        console.error('Error saving assessment:', error);
+        // You could add a toast notification or error message here
+      } finally {
+        this.loading = false;
+      }
     } else {
       this.markFormGroupTouched();
     }

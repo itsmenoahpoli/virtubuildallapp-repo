@@ -5,6 +5,10 @@ export class AssessmentsService {
 		return assessmentsRepository.find({ where: { labActivityId } });
 	}
 
+	public async listAll() {
+		return assessmentsRepository.find({ where: { isEnabled: true } });
+	}
+
 	public async create(labActivityId: number, assessmentData: any) {
 		const created = assessmentsRepository.create({
 			labActivityId,

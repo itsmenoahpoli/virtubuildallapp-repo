@@ -7,6 +7,16 @@ export const seedAssessmentSubmissions = async () => {
   const students = await usersRepository.findBy({ userRoleId: studentRole?.id });
   const assessments = await assessmentsRepository.find();
   
+  if (!students || students.length === 0) {
+    console.log("No students found, skipping assessment submissions seeding");
+    return;
+  }
+  
+  if (!assessments || assessments.length === 0) {
+    console.log("No assessments found, skipping assessment submissions seeding");
+    return;
+  }
+  
   const submissionData = [
     {
       answers: {

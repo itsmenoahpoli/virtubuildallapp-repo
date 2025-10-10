@@ -10,22 +10,22 @@
     <div class="content" *ngIf="!loading">
       <div class="laboratories-grid">
         <div class="lab-card" *ngFor="let lab of laboratories">
+          <div class="lab-actions">
+            <button class="btn btn-sm btn-secondary" (click)="viewLaboratory(lab)">
+              <span class="btn-icon">👁️</span>
+              View
+            </button>
+            <button class="btn btn-sm btn-secondary" (click)="editLaboratory(lab)">
+              <span class="btn-icon">✏️</span>
+              Edit
+            </button>
+            <button class="btn btn-sm btn-danger" (click)="deleteLaboratory(lab)">
+              <span class="btn-icon">🗑️</span>
+              Delete
+            </button>
+          </div>
           <div class="lab-header">
             <h3>{{ lab.title }}</h3>
-            <div class="lab-actions">
-              <button class="btn btn-sm btn-secondary" (click)="viewLaboratory(lab)">
-                <span class="btn-icon">👁️</span>
-                View
-              </button>
-              <button class="btn btn-sm btn-secondary" (click)="editLaboratory(lab)">
-                <span class="btn-icon">✏️</span>
-                Edit
-              </button>
-              <button class="btn btn-sm btn-danger" (click)="deleteLaboratory(lab.id)">
-                <span class="btn-icon">🗑️</span>
-                Delete
-              </button>
-            </div>
           </div>
           <div class="lab-content">
             <p class="lab-description">{{ lab.description }}</p>
@@ -194,48 +194,10 @@
             </ng-template>
           </div>
 
-          <!-- Student Progress -->
-          <div class="progress-section">
-            <div class="section-header">
-              <h3>Student Progress</h3>
-              <button class="btn btn-sm btn-secondary" (click)="refreshProgress()">
-                <span class="btn-icon">🔄</span>
-                Refresh
-              </button>
-            </div>
-            
-            <div class="progress-stats">
-              <div class="stat-card">
-                <div class="stat-icon">👥</div>
-                <div class="stat-content">
-                  <h4>{{ labProgress.totalStudents || 0 }}</h4>
-                  <p>Total Students</p>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">✅</div>
-                <div class="stat-content">
-                  <h4>{{ labProgress.completedStudents || 0 }}</h4>
-                  <p>Completed</p>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">⏱️</div>
-                <div class="stat-content">
-                  <h4>{{ labProgress.averageTime || '0m' }}</h4>
-                  <p>Avg. Time</p>
-                </div>
-              </div>
-              <div class="stat-card">
-                <div class="stat-icon">📊</div>
-                <div class="stat-content">
-                  <h4>{{ labProgress.completionRate || 0 }}%</h4>
-                  <p>Completion Rate</p>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>
+
+    <!-- Success Modal -->
+    <app-success-modal></app-success-modal>
 </div>

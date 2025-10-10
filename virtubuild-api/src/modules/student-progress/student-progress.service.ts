@@ -1,5 +1,4 @@
-import { studentProgressRepository, labActivitiesRepository, studentGroupAssignmentsRepository, moduleActivationsRepository } from "@/database";
-import { In } from "typeorm";
+import { studentProgressRepository, labActivitiesRepository, studentGroupAssignmentsRepository } from "@/database";
 
 export class StudentProgressService {
 	public async createProgress(progressData: any) {
@@ -10,7 +9,7 @@ export class StudentProgressService {
 	public async getStudentProgress(studentId: number) {
 		return studentProgressRepository.find({
 			where: { studentId },
-			relations: ["activity", "activity.module"],
+			relations: ["activity"],
 			order: { createdAt: "DESC" }
 		});
 	}
@@ -53,48 +52,22 @@ export class StudentProgressService {
 	}
 
 	public async getAssignedActivities(studentId: number) {
-		const studentGroups = await studentGroupAssignmentsRepository.find({
-			where: { studentId },
-			relations: ["studentGroup"]
-		});
-
-		const groupNames = studentGroups.map(sg => sg.studentGroup.name);
-		
-		const activations = await moduleActivationsRepository.find({
-			where: { groupName: In(groupNames), isActive: true }
-		});
-
-		const moduleIds = activations.map(a => a.moduleId);
-		
+		// Since LabActivity is now standalone, return all enabled lab activities
 		return labActivitiesRepository.find({
-			where: { moduleId: In(moduleIds), isEnabled: true },
-			relations: ["module"]
+			where: { isEnabled: true }
 		});
 	}
 
 	public async getAssignedModules(studentId: number) {
-		const studentGroups = await studentGroupAssignmentsRepository.find({
-			where: { studentId },
-			relations: ["studentGroup"]
-		});
-
-		const groupNames = studentGroups.map(sg => sg.studentGroup.name);
-		
-		const activations = await moduleActivationsRepository.find({
-			where: { groupName: In(groupNames), isActive: true }
-		});
-
-		const moduleIds = activations.map(a => a.moduleId);
-		
+		// Since LabActivity is now standalone, return all enabled lab activities
 		return labActivitiesRepository.find({
-			where: { moduleId: In(moduleIds), isEnabled: true },
-			relations: ["module"]
+			where: { isEnabled: true }
 		});
 	}
 
 	public async getInstructorStudentProgress() {
 		return studentProgressRepository.find({
-			relations: ["student", "activity", "activity.module"],
+			relations: ["student", "activity"],
 			order: { createdAt: "DESC" }
 		});
 	}

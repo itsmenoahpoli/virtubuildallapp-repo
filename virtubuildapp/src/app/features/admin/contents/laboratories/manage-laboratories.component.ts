@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { AdminService } from '@/app/core/services';
+import { ModalService } from '@/app/shared/services/modal.service';
+import { SuccessModalComponent } from '@/app/shared/components/success-modal/success-modal.component';
 
 @Component({
   selector: 'app-manage-laboratories',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, SuccessModalComponent],
   templateUrl: './manage-laboratories.component.html',
   styleUrls: ['./manage-laboratories.component.scss']
 })
@@ -19,13 +21,14 @@ export class ManageLaboratoriesComponent implements OnInit {
   showViewModal = false;
   selectedLab: any = null;
   labAssessments: any[] = [];
-  labProgress: any = {};
   newLab: any = {
     title: '',
     description: '',
     instructions: '',
     isEnabled: true
   };
+
+  constructor(private modalService: ModalService) {}
 
   async ngOnInit() {
     try {
@@ -109,19 +112,42 @@ export class ManageLaboratoriesComponent implements OnInit {
       await AdminService.updateLabActivity(this.selectedLab.id, this.selectedLab);
       await this.loadLaboratories();
       this.cancelEdit();
+      this.modalService.showSuccess({
+        title: 'Update Successful',
+        message: 'Laboratory activity has been updated successfully.',
+        icon: 'success'
+      });
     } catch (error) {
       console.error('Error updating laboratory:', error);
+      this.modalService.showSuccess({
+        title: 'Update Failed',
+        message: 'Failed to update laboratory activity. Please try again.',
+        icon: 'error'
+      });
     }
   }
 
-  async deleteLaboratory(id: number) {
-    if (confirm('Are you sure you want to delete this laboratory?')) {
-      try {
-        await AdminService.deleteLabActivity(id);
-        await this.loadLaboratories();
-      } catch (error) {
-        console.error('Error deleting laboratory:', error);
-      }
+  deleteLaboratory(laboratory: any) {
+    this.modalService.confirmDelete(
+      'Delete Laboratory',
+      'Are you sure you want to delete this laboratory? This action cannot be undone and will also delete all associated assessments.',
+      laboratory.name,
+      () => this.performDeleteLaboratory(laboratory.id)
+    );
+  }
+
+  private async performDeleteLaboratory(id: number) {
+    try {
+      await AdminService.deleteLabActivity(id);
+      await this.loadLaboratories();
+      this.modalService.showDeleteSuccess('Laboratory');
+    } catch (error) {
+      console.error('Error deleting laboratory:', error);
+      this.modalService.showSuccess({
+        title: 'Delete Failed',
+        message: 'Failed to delete laboratory. Please try again.',
+        icon: 'error'
+      });
     }
   }
 
@@ -144,14 +170,12 @@ export class ManageLaboratoriesComponent implements OnInit {
     this.selectedLab = lab;
     this.showViewModal = true;
     this.loadLabAssessments(lab.id);
-    this.loadLabProgress(lab.id);
   }
 
   closeViewModal() {
     this.showViewModal = false;
     this.selectedLab = null;
     this.labAssessments = [];
-    this.labProgress = {};
   }
 
   async loadLabAssessments(labId: number) {
@@ -177,26 +201,6 @@ export class ManageLaboratoriesComponent implements OnInit {
     }
   }
 
-  async loadLabProgress(labId: number) {
-    try {
-      // Mock progress data
-      this.labProgress = {
-        totalStudents: 25,
-        completedStudents: 18,
-        averageTime: '45m',
-        completionRate: 72
-      };
-    } catch (error) {
-      console.error('Error loading lab progress:', error);
-      this.labProgress = {};
-    }
-  }
-
-  async refreshProgress() {
-    if (this.selectedLab) {
-      await this.loadLabProgress(this.selectedLab.id);
-    }
-  }
 
   viewAssessment(assessment: any) {
     console.log('View assessment:', assessment);

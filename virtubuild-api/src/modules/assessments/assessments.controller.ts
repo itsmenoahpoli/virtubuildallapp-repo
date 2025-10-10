@@ -30,6 +30,20 @@ export class AssessmentsController extends BaseController {
 	/**
 	 * @swagger
 	 * /assessments:
+	 *   get:
+	 *     summary: List all assessments
+	 *     tags: [Assessments]
+	 *     security:
+	 *       - BearerAuth: []
+	 */
+	public async listAllHandler(request: Request, response: Response, next: NextFunction): Promise<any> {
+		const result = await this.assessmentsService.listAll();
+		return SendHttpResponse(response, result, HttpStatusCode.OK);
+	}
+
+	/**
+	 * @swagger
+	 * /assessments:
 	 *   post:
 	 *     summary: Create new assessment
 	 *     tags: [Assessments]
