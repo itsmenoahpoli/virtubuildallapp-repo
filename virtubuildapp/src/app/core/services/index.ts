@@ -12,3 +12,4 @@ export { SimulationsService } from './simulations.service';
 export { AssessmentSubmissionsService } from './assessment-submissions.service';
 export { AdminService } from './admin.service';
 export { SystemService } from './system.service';
+export { UsersService } from './users.service';

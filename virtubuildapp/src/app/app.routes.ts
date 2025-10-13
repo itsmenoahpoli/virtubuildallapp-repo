@@ -10,6 +10,8 @@ import { AnalyticsPageComponent } from './features/student/analytics/analytics-p
 import { ManageModulesComponent } from './features/instructor/manage-modules/manage-modules.component';
 import { InstructorGradesComponent } from './features/instructor/grades/instructor-grades.component';
 import { AssessmentEditorComponent } from './features/instructor/assessments/assessment-editor.component';
+import { ManageActivitiesComponent } from './features/instructor/activities/manage-activities.component';
+import { MyAccountComponent } from './features/instructor/account/my-account.component';
 import { AuthGuard } from './core/guards/auth.guard';
 import { RoleGuard } from './core/guards/role.guard';
 
@@ -71,10 +73,12 @@ export const routes: Routes = [
     data: { roles: ['instructor'] },
     children: [
       { path: '', component: InstructorHomeComponent },
+      { path: 'manage-activities', component: ManageActivitiesComponent },
       { path: 'manage-modules', component: ManageModulesComponent },
       { path: 'grades', component: InstructorGradesComponent },
       { path: 'assessments/:moduleId', component: AssessmentEditorComponent },
       { path: 'student-groups', component: StudentGroupsManagementComponent },
+      { path: 'my-account', component: MyAccountComponent },
     ],
   },
   {

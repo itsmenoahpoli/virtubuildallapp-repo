@@ -1,0 +1,77 @@
+<app-dashboard-layout [appTitle]="appTitle">
+  <app-page-shell title="Manage Activities" subtitle="View and manage lab activities">
+    <div class="manage-activities">
+      <div class="filters-section">
+        <div class="filter-group">
+          <label for="moduleFilter">Filter by Module:</label>
+          <select id="moduleFilter" [(ngModel)]="selectedModule" (change)="onModuleChange()">
+            <option [value]="null">All Modules</option>
+            <option *ngFor="let module of modules" [value]="module.id">{{ module.title }}</option>
+          </select>
+        </div>
+        <button class="refresh-btn" (click)="refreshActivities()" [disabled]="loading">
+          <span class="material-icons">refresh</span>
+          Refresh
+        </button>
+      </div>
+
+      <div class="error-message" *ngIf="error">
+        <span class="material-icons">error</span>
+        {{ error }}
+      </div>
+
+      <div class="loading-spinner" *ngIf="loading">
+        <span class="material-icons">hourglass_empty</span>
+        Loading activities...
+      </div>
+
+      <div class="activities-grid" *ngIf="!loading && !error">
+        <div class="activity-card" *ngFor="let activity of filteredActivities">
+          <div class="activity-header">
+            <h3>{{ activity.title }}</h3>
+            <span class="activity-status" [class.enabled]="activity.isEnabled" [class.disabled]="!activity.isEnabled">
+              {{ activity.isEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+          </div>
+          
+          <div class="activity-content">
+            <p class="activity-description">{{ activity.description || 'No description available' }}</p>
+            
+            <div class="activity-details">
+              <div class="detail-item">
+                <span class="material-icons">folder</span>
+                <span>Module: {{ getModuleName(activity.moduleId) }}</span>
+              </div>
+              <div class="detail-item" *ngIf="activity.difficultyLevel">
+                <span class="material-icons">trending_up</span>
+                <span>Level: {{ activity.difficultyLevel }}</span>
+              </div>
+              <div class="detail-item" *ngIf="activity.estimatedDuration">
+                <span class="material-icons">schedule</span>
+                <span>Duration: {{ activity.estimatedDuration }} minutes</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="activity-actions">
+            <button class="btn btn-primary" [routerLink]="['/instructor/assessments', activity.id]">
+              <span class="material-icons">quiz</span>
+              Manage Assessments
+            </button>
+            <button class="btn btn-secondary" [routerLink]="['/instructor/grades']" [queryParams]="{activityId: activity.id}">
+              <span class="material-icons">grade</span>
+              View Grades
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="no-activities" *ngIf="!loading && !error && filteredActivities.length === 0">
+        <span class="material-icons">assignment</span>
+        <h3>No activities found</h3>
+        <p *ngIf="selectedModule">No activities found for the selected module.</p>
+        <p *ngIf="!selectedModule">No activities are available.</p>
+      </div>
+    </div>
+  </app-page-shell>
+</app-dashboard-layout>

@@ -431,3 +431,5 @@
 [2025-10-10T06:19:30.293Z] GET /api/activities 304 {}
 [2025-10-10T06:19:33.324Z] GET /api/admin/users 304 {}
 [2025-10-10T06:19:33.331Z] GET /api/admin/user-roles 304 {}
+[2025-10-13T04:07:45.627Z] GET /api/system/healthcheck 304 {}
+[2025-10-13T04:09:27.720Z] POST /api/auth/signin 200 {"email":"robert.miller@instructor.com","password":"Password123!"}
