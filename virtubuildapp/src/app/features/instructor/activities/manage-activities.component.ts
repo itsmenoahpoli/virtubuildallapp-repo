@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DashboardLayoutComponent } from '@/app/shared/components/layouts/dashboard/dashboard-layout/dashboard-layout.component';
 import { PageShellComponent } from '@/app/shared/components/layouts/page-shell/page-shell.component';
-import { ActivitiesService, ModulesService } from '@/app/core/services';
+import { ActivitiesService, AssessmentsService, GradesService } from '@/app/core/services';
 
 @Component({
   selector: 'app-manage-activities',
@@ -23,6 +23,11 @@ export class ManageActivitiesComponent implements OnInit {
   currentPage = 1;
   sortField: 'title' | 'location' | 'capacity' | 'isEnabled' | 'createdAt' = 'title';
   sortDirection: 'asc' | 'desc' = 'asc';
+  showAssessmentsModal = false;
+  showGradesModal = false;
+  selectedActivity: any = null;
+  activityAssessments: any[] = [];
+  activityGrades: any[] = [];
 
   async ngOnInit() {
     await this.loadActivities();
@@ -104,6 +109,51 @@ export class ManageActivitiesComponent implements OnInit {
       this.sortField = field;
       this.sortDirection = 'asc';
     }
+  }
+
+  async openAssessments(activity: any) {
+    this.selectedActivity = activity;
+    try {
+      const res = await AssessmentsService.getByLabActivity(activity.id);
+      this.activityAssessments = res?.data || res || [];
+    } catch (e) {
+      this.activityAssessments = [];
+    }
+    this.showAssessmentsModal = true;
+  }
+
+  async openGrades(activity: any) {
+    this.selectedActivity = activity;
+    try {
+      const res = await GradesService.listForActivity(activity.id);
+      this.activityGrades = res?.data || res || [];
+    } catch (e) {
+      this.activityGrades = [];
+    }
+    this.showGradesModal = true;
+  }
+
+  closeModals() {
+    this.showAssessmentsModal = false;
+    this.showGradesModal = false;
+    this.selectedActivity = null;
+  }
+
+  getGradeStudentName(grade: any): string {
+    const user = grade.user || grade.student;
+    const first = user?.firstName || user?.firstname || grade.studentFirstName;
+    const last = user?.lastName || user?.lastname || grade.studentLastName;
+    const full = [first, last].filter(Boolean).join(' ').trim();
+    if (full) return full;
+    return user?.name || grade.studentName || user?.email || grade.userEmail || grade.email || '-';
+  }
+
+  getGradeAssessmentTitle(grade: any): string {
+    if (grade.activity) {
+      return grade.activity.title
+    }
+
+    return '-'
   }
 
   async refreshActivities() {

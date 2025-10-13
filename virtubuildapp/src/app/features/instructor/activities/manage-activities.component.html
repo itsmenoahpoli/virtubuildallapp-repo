@@ -84,11 +84,13 @@
               </td>
               <td>{{ activity.createdAt | date:'medium' }}</td>
               <td class="actions-cell">
-                <button class="btn btn-primary" [routerLink]="['/instructor/assessments', activity.id]">
+                <button class="btn btn-universal" title="View Assessments" (click)="openAssessments(activity)">
                   <span class="material-icons">quiz</span>
+                  View Assessments
                 </button>
-                <button class="btn btn-secondary" [routerLink]="['/instructor/grades']" [queryParams]="{activityId: activity.id}">
+                <button class="btn btn-universal" title="View Grades" (click)="openGrades(activity)">
                   <span class="material-icons">grade</span>
+                  Grades
                 </button>
               </td>
             </tr>
@@ -110,6 +112,60 @@
         <span class="material-icons">assignment</span>
         <h3>No activities found</h3>
         <p>No activities are available.</p>
+      </div>
+
+      <div class="modal-overlay" *ngIf="showAssessmentsModal || showGradesModal" (click)="closeModals()">
+        <div class="modal-content" (click)="$event.stopPropagation()">
+          <div class="modal-header">
+            <h3 *ngIf="showAssessmentsModal">Assessments for {{ selectedActivity?.title }}</h3>
+            <h3 *ngIf="showGradesModal">Grades for {{ selectedActivity?.title }}</h3>
+            <button class="close-btn" (click)="closeModals()">&times;</button>
+          </div>
+          <div class="modal-body" *ngIf="showAssessmentsModal">
+            <table *ngIf="activityAssessments.length > 0">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Questions</th>
+                  <th>Time</th>
+                  <th>Pass %</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let a of activityAssessments">
+                  <td>{{ a.title }}</td>
+                  <td>{{ a.description || '-' }}</td>
+                  <td>{{ a.questions?.length ?? 0 }}</td>
+                  <td>{{ a.timeLimit ?? a.timeLimitMinutes ?? '-' }}</td>
+                  <td>{{ a.passingScore ?? '-' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-state" *ngIf="activityAssessments.length === 0">No assessments found.</div>
+          </div>
+          <div class="modal-body" *ngIf="showGradesModal">
+            <table *ngIf="activityGrades.length > 0">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Assessment</th>
+                  <th>Score</th>
+                  <th>Submitted</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let g of activityGrades">
+                  <td>{{ getGradeStudentName(g) }}</td>
+                  <td>{{ getGradeAssessmentTitle(g) }}</td>
+                  <td>{{ g.score ?? g.percentage ?? '-' }}%</td>
+                  <td>{{ g.submittedAt || g.createdAt | date:'medium' }}</td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty-state" *ngIf="activityGrades.length === 0">No grades found.</div>
+          </div>
+        </div>
       </div>
     </div>
   </app-page-shell>

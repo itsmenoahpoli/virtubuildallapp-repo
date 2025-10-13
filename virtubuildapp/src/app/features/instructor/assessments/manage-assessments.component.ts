@@ -10,8 +10,8 @@ import { AssessmentsService, ActivitiesService } from '@/app/core/services';
   selector: 'app-manage-assessments',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, DashboardLayoutComponent, PageShellComponent],
-  templateUrl: './manage-assessments.component.html',
-  styleUrls: ['./manage-assessments.component.scss'],
+  templateUrl: 'manage-assessments.component.html',
+  styleUrls: ['manage-assessments.component.scss'],
 })
 export class ManageAssessmentsComponent implements OnInit {
   appTitle = 'VirtuBuild';

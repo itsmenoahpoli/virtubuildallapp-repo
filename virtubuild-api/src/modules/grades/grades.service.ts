@@ -5,9 +5,9 @@ export class GradesService {
 		return gradesRepository.find({ where: { userId } });
 	}
 
-	public async listForActivity(activityId: number) {
-		return gradesRepository.find({ where: { activityId } });
-	}
+  public async listForActivity(activityId: number) {
+    return gradesRepository.find({ where: { activityId }, relations: ["user", "activity"] });
+  }
 }
 
 
