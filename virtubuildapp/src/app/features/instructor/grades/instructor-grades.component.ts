@@ -87,7 +87,7 @@ export class InstructorGradesComponent implements OnInit {
     try {
       const response = await UsersService.getAllUsers();
       const allUsers = response?.data || [];
-      this.students = allUsers.filter(user => userIds.includes(user.id));
+      this.students = allUsers.filter((user: any) => userIds.includes(user.id));
     } catch (error) {
       console.error('Error loading students:', error);
     }
