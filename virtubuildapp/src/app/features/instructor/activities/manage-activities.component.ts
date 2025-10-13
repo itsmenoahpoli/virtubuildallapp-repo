@@ -16,24 +16,16 @@ import { ActivitiesService, ModulesService } from '@/app/core/services';
 export class ManageActivitiesComponent implements OnInit {
   appTitle = 'VirtuBuild';
   activities: any[] = [];
-  modules: any[] = [];
-  selectedModule: number | null = null;
+  searchTerm = '';
   loading = false;
   error: string | null = null;
+  itemsPerPage = 10;
+  currentPage = 1;
+  sortField: 'title' | 'location' | 'capacity' | 'isEnabled' | 'createdAt' = 'title';
+  sortDirection: 'asc' | 'desc' = 'asc';
 
   async ngOnInit() {
-    await this.loadModules();
     await this.loadActivities();
-  }
-
-  async loadModules() {
-    try {
-      const response = await ModulesService.list();
-      this.modules = response?.data || [];
-    } catch (error) {
-      console.error('Error loading modules:', error);
-      this.error = 'Failed to load modules';
-    }
   }
 
   async loadActivities() {
@@ -41,7 +33,8 @@ export class ManageActivitiesComponent implements OnInit {
     this.error = null;
     try {
       const response = await ActivitiesService.list();
-      this.activities = response?.data || [];
+      this.activities = response?.data || response || [];
+      this.currentPage = 1;
     } catch (error) {
       console.error('Error loading activities:', error);
       this.error = 'Failed to load activities';
@@ -50,23 +43,71 @@ export class ManageActivitiesComponent implements OnInit {
     }
   }
 
-  onModuleChange() {
-    this.loadActivities();
+  get filteredActivities() {
+    let results = this.activities;
+    const term = this.searchTerm?.toLowerCase().trim();
+    if (term) {
+      results = results.filter(a =>
+        (a.title || '').toLowerCase().includes(term) ||
+        (a.description || '').toLowerCase().includes(term) ||
+        (a.location || '').toLowerCase().includes(term)
+      );
+    }
+    results = [...results].sort((a, b) => {
+      const dir = this.sortDirection === 'asc' ? 1 : -1;
+      const av = a[this.sortField] ?? '';
+      const bv = b[this.sortField] ?? '';
+      if (typeof av === 'string' && typeof bv === 'string') return av.localeCompare(bv) * dir;
+      if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * dir;
+      return String(av).localeCompare(String(bv)) * dir;
+    });
+    return results;
   }
 
-  get filteredActivities() {
-    if (!this.selectedModule) {
-      return this.activities;
+  get totalItems() {
+    return this.filteredActivities.length;
+  }
+
+  get totalPages() {
+    return Math.max(1, Math.ceil(this.totalItems / this.itemsPerPage));
+  }
+
+  get paginatedActivities() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredActivities.slice(start, start + this.itemsPerPage);
+  }
+
+  onSearchChange() {
+    this.currentPage = 1;
+  }
+
+  onItemsPerPageChange(value: number) {
+    this.itemsPerPage = Number(value) || 10;
+    this.currentPage = 1;
+  }
+
+  onPageChange(page: number) {
+    if (page < 1 || page > this.totalPages) return;
+    this.currentPage = page;
+  }
+
+  getPageNumbers() {
+    const pages: number[] = [];
+    for (let i = 1; i <= this.totalPages; i++) pages.push(i);
+    return pages;
+  }
+
+  sort(field: typeof this.sortField) {
+    if (this.sortField === field) {
+      this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortField = field;
+      this.sortDirection = 'asc';
     }
-    return this.activities.filter(activity => activity.moduleId === this.selectedModule);
   }
 
   async refreshActivities() {
     await this.loadActivities();
   }
 
-  getModuleName(moduleId: number): string {
-    const module = this.modules.find(m => m.id === moduleId);
-    return module ? module.title : 'Unknown Module';
-  }
 }

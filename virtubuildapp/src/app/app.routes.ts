@@ -73,9 +73,11 @@ export const routes: Routes = [
     data: { roles: ['instructor'] },
     children: [
       { path: '', component: InstructorHomeComponent },
+      { path: 'laboratories', component: ManageActivitiesComponent },
       { path: 'manage-activities', component: ManageActivitiesComponent },
       { path: 'manage-modules', component: ManageModulesComponent },
       { path: 'grades', component: InstructorGradesComponent },
+      { path: 'assessments', component: ManageActivitiesComponent },
       { path: 'assessments/:moduleId', component: AssessmentEditorComponent },
       { path: 'student-groups', component: StudentGroupsManagementComponent },
       { path: 'my-account', component: MyAccountComponent },

@@ -1,18 +1,28 @@
 <app-dashboard-layout [appTitle]="appTitle">
   <app-page-shell title="Manage Activities" subtitle="View and manage lab activities">
     <div class="manage-activities">
-      <div class="filters-section">
-        <div class="filter-group">
-          <label for="moduleFilter">Filter by Module:</label>
-          <select id="moduleFilter" [(ngModel)]="selectedModule" (change)="onModuleChange()">
-            <option [value]="null">All Modules</option>
-            <option *ngFor="let module of modules" [value]="module.id">{{ module.title }}</option>
-          </select>
+      <div class="table-controls">
+        <div class="search-section">
+          <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search activities..." [(ngModel)]="searchTerm" (input)="onSearchChange()">
+            <span class="search-icon">🔍</span>
+          </div>
         </div>
-        <button class="refresh-btn" (click)="refreshActivities()" [disabled]="loading">
-          <span class="material-icons">refresh</span>
-          Refresh
-        </button>
+        <div class="table-info">
+          <div class="items-per-page">
+            <label>Show:</label>
+            <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange(itemsPerPage)" class="page-select">
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+          <button class="refresh-btn" (click)="refreshActivities()" [disabled]="loading">
+            <span class="material-icons">refresh</span>
+            Refresh
+          </button>
+        </div>
       </div>
 
       <div class="error-message" *ngIf="error">
@@ -25,52 +35,81 @@
         Loading activities...
       </div>
 
-      <div class="activities-grid" *ngIf="!loading && !error">
-        <div class="activity-card" *ngFor="let activity of filteredActivities">
-          <div class="activity-header">
-            <h3>{{ activity.title }}</h3>
-            <span class="activity-status" [class.enabled]="activity.isEnabled" [class.disabled]="!activity.isEnabled">
-              {{ activity.isEnabled ? 'Enabled' : 'Disabled' }}
-            </span>
+      <div class="instructors-table" *ngIf="!loading && !error">
+        <table *ngIf="filteredActivities.length > 0">
+          <thead>
+            <tr>
+              <th (click)="sort('title')" class="sortable">Title
+                <span class="sort-indicator" *ngIf="sortField === 'title'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+              </th>
+              <th (click)="sort('location')" class="sortable">Location
+                <span class="sort-indicator" *ngIf="sortField === 'location'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+              </th>
+              <th>Capacity</th>
+              <th>Tools</th>
+              <th>Components</th>
+              <th>Simulation</th>
+              <th>Workstations</th>
+              <th (click)="sort('isEnabled')" class="sortable">Status
+                <span class="sort-indicator" *ngIf="sortField === 'isEnabled'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+              </th>
+              <th (click)="sort('createdAt')" class="sortable">Created
+                <span class="sort-indicator" *ngIf="sortField === 'createdAt'">{{ sortDirection === 'asc' ? '↑' : '↓' }}</span>
+              </th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let activity of paginatedActivities">
+              <td>
+                <div class="title-cell">{{ activity.title }}</div>
+                <div class="description-preview">{{ activity.description }}</div>
+              </td>
+              <td>{{ activity.location || '-' }}</td>
+              <td>{{ activity.capacity || '-' }}</td>
+              <td>
+                <span *ngIf="activity.equipment?.tools?.length; else noTools">{{ activity.equipment.tools.join(', ') }}</span>
+                <ng-template #noTools>-</ng-template>
+              </td>
+              <td>
+                <span *ngIf="activity.equipment?.components?.length; else noComponents">{{ activity.equipment.components.join(', ') }}</span>
+                <ng-template #noComponents>-</ng-template>
+              </td>
+              <td>{{ activity.equipment?.simulation || '-' }}</td>
+              <td>{{ activity.equipment?.workstations ?? '-' }}</td>
+              <td>
+                <span class="activity-status" [class.enabled]="activity.isEnabled" [class.disabled]="!activity.isEnabled">
+                  {{ activity.isEnabled ? 'Enabled' : 'Disabled' }}
+                </span>
+              </td>
+              <td>{{ activity.createdAt | date:'medium' }}</td>
+              <td class="actions-cell">
+                <button class="btn btn-primary" [routerLink]="['/instructor/assessments', activity.id]">
+                  <span class="material-icons">quiz</span>
+                </button>
+                <button class="btn btn-secondary" [routerLink]="['/instructor/grades']" [queryParams]="{activityId: activity.id}">
+                  <span class="material-icons">grade</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination" *ngIf="totalPages > 1">
+        <div class="pagination-info">Page {{ currentPage }} of {{ totalPages }}</div>
+        <div class="pagination-controls">
+          <button class="btn btn-sm btn-secondary" (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1">Previous</button>
+          <div class="page-numbers">
+            <button *ngFor="let page of getPageNumbers()" class="page-btn" [class.active]="page === currentPage" (click)="onPageChange(page)">{{ page }}</button>
           </div>
-          
-          <div class="activity-content">
-            <p class="activity-description">{{ activity.description || 'No description available' }}</p>
-            
-            <div class="activity-details">
-              <div class="detail-item">
-                <span class="material-icons">folder</span>
-                <span>Module: {{ getModuleName(activity.moduleId) }}</span>
-              </div>
-              <div class="detail-item" *ngIf="activity.difficultyLevel">
-                <span class="material-icons">trending_up</span>
-                <span>Level: {{ activity.difficultyLevel }}</span>
-              </div>
-              <div class="detail-item" *ngIf="activity.estimatedDuration">
-                <span class="material-icons">schedule</span>
-                <span>Duration: {{ activity.estimatedDuration }} minutes</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="activity-actions">
-            <button class="btn btn-primary" [routerLink]="['/instructor/assessments', activity.id]">
-              <span class="material-icons">quiz</span>
-              Manage Assessments
-            </button>
-            <button class="btn btn-secondary" [routerLink]="['/instructor/grades']" [queryParams]="{activityId: activity.id}">
-              <span class="material-icons">grade</span>
-              View Grades
-            </button>
-          </div>
+          <button class="btn btn-sm btn-secondary" (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages">Next</button>
         </div>
       </div>
 
       <div class="no-activities" *ngIf="!loading && !error && filteredActivities.length === 0">
         <span class="material-icons">assignment</span>
         <h3>No activities found</h3>
-        <p *ngIf="selectedModule">No activities found for the selected module.</p>
-        <p *ngIf="!selectedModule">No activities are available.</p>
+        <p>No activities are available.</p>
       </div>
     </div>
   </app-page-shell>
