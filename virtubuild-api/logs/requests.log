@@ -628,3 +628,15 @@
 [2025-10-13T08:36:05.909Z] GET /api/grades/activity/1 200 {}
 [2025-10-13T08:36:07.772Z] GET /api/assessments/lab-activity/1 200 {}
 [2025-10-13T08:36:13.736Z] GET /api/grades/activity/1 200 {}
+[2025-10-13T08:36:40.704Z] GET /api/assessments 200 {}
+[2025-10-13T08:36:40.718Z] GET /api/activities/1 200 {}
+[2025-10-13T08:36:40.732Z] GET /api/activities/2 200 {}
+[2025-10-13T08:36:40.739Z] GET /api/activities/3 200 {}
+[2025-10-13T08:36:41.483Z] GET /api/modules 200 {}
+[2025-10-13T08:36:41.490Z] GET /api/activities 200 {}
+[2025-10-13T08:36:43.168Z] GET /api/modules 200 {}
+[2025-10-13T08:36:43.175Z] GET /api/activities 200 {}
+[2025-10-13T08:38:50.665Z] GET /api/modules 200 {}
+[2025-10-13T08:38:50.688Z] GET /api/activities 200 {}
+[2025-10-13T08:40:30.442Z] GET /api/modules 200 {}
+[2025-10-13T08:40:30.470Z] GET /api/activities 200 {}

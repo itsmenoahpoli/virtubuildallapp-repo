@@ -134,134 +134,191 @@
     }
   }
 
-  .grades-table-container {
-    background: white;
-    border: 1px solid #e9ecef;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  .activities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
 
-    .table-header {
-      padding: 16px 20px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #e9ecef;
+  .activity-card {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    padding: 16px;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.1s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+
+    &:hover {
+      box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .activity-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
 
       h3 {
         margin: 0;
-        color: #212529;
         font-size: 16px;
+        color: #212529;
         font-weight: 600;
+      }
+
+      .material-icons {
+        color: #6c757d;
       }
     }
 
-    .grades-table {
-      .table-header-row {
-        display: grid;
-        grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr;
-        gap: 16px;
-        padding: 12px 20px;
-        background: #f8f9fa;
-        border-bottom: 1px solid #e9ecef;
-        font-weight: 600;
-        color: #495057;
-        font-size: 14px;
+    .activity-meta {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+
+      .meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
 
-      .table-row {
-        display: grid;
-        grid-template-columns: 2fr 2fr 1fr 1fr 1.5fr;
-        gap: 16px;
-        padding: 16px 20px;
-        border-bottom: 1px solid #e9ecef;
-        align-items: center;
-        transition: background-color 0.2s;
-
-        &:hover {
-          background: #f8f9fa;
-        }
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .col-student {
-          .student-info {
-            .student-name {
-              font-weight: 500;
-              color: #212529;
-            }
-          }
-        }
-
-        .col-email {
-          .student-email {
-            color: #6c757d;
-            font-size: 14px;
-          }
-        }
-
-        .col-score {
-          .score-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            text-align: center;
-            min-width: 50px;
-
-            &.excellent {
-              background: #d4edda;
-              color: #155724;
-            }
-
-            &.good {
-              background: #d1ecf1;
-              color: #0c5460;
-            }
-
-            &.pass {
-              background: #fff3cd;
-              color: #856404;
-            }
-
-            &.fail {
-              background: #f8d7da;
-              color: #721c24;
-            }
-          }
-        }
-
-        .col-status {
-          .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-weight: 500;
-            font-size: 12px;
-            text-transform: uppercase;
-            text-align: center;
-            min-width: 60px;
-
-            &.excellent, &.good, &.pass {
-              background: #d4edda;
-              color: #155724;
-            }
-
-            &.fail {
-              background: #f8d7da;
-              color: #721c24;
-            }
-          }
-        }
-
-        .col-date {
-          .grade-date {
-            color: #6c757d;
-            font-size: 14px;
-          }
-        }
+      .meta-label {
+        font-size: 11px;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: .5px;
       }
+
+      .meta-value {
+        font-size: 13px;
+        color: #343a40;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .no-activities {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+
+    .material-icons {
+      font-size: 48px;
+      margin-bottom: 16px;
+      color: #dee2e6;
+    }
+  }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+
+  .modal-sheet {
+    width: 100%;
+    max-width: 1200px;
+    max-height: 90vh;
+    background: #fff;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid #e9ecef;
+    background: #f8f9fa;
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+  }
+
+  .modal-content {
+    padding: 16px;
+    overflow: auto;
+  }
+
+  .modal-columns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .column {
+    background: #fff;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 12px;
+
+    h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .list-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border: 1px solid #f1f3f5;
+      border-radius: 6px;
+      background: #fafbfc;
+    }
+
+    .primary {
+      font-weight: 500;
+      color: #212529;
+    }
+
+    .secondary {
+      color: #6c757d;
+      font-size: 12px;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 600;
+      font-size: 12px;
+      &.excellent { background: #d4edda; color: #155724; }
+      &.good { background: #d1ecf1; color: #0c5460; }
+      &.pass { background: #fff3cd; color: #856404; }
+      &.fail { background: #f8d7da; color: #721c24; }
+    }
+
+    .empty {
+      color: #6c757d;
+      font-size: 13px;
+      padding: 10px;
+      text-align: center;
     }
   }
 
@@ -306,46 +363,8 @@
       }
     }
 
-    .grades-table-container {
-      .grades-table {
-        .table-header-row,
-        .table-row {
-          grid-template-columns: 1fr;
-          gap: 8px;
-
-          > div {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 4px 0;
-
-            &::before {
-              content: attr(data-label);
-              font-weight: 600;
-              color: #495057;
-            }
-          }
-        }
-
-        .table-header-row {
-          display: none;
-        }
-
-        .table-row {
-          border: 1px solid #e9ecef;
-          border-radius: 6px;
-          margin-bottom: 12px;
-          padding: 12px;
-
-          > div {
-            &::before {
-              content: attr(data-label);
-              font-weight: 600;
-              color: #495057;
-            }
-          }
-        }
-      }
+    .modal-columns {
+      grid-template-columns: 1fr;
     }
   }
 }

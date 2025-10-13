@@ -4,7 +4,7 @@ import { RouterModule, ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { DashboardLayoutComponent } from '@/app/shared/components/layouts/dashboard/dashboard-layout/dashboard-layout.component';
 import { PageShellComponent } from '@/app/shared/components/layouts/page-shell/page-shell.component';
-import { GradesService, ActivitiesService, ModulesService, UsersService } from '@/app/core/services';
+import { GradesService, ActivitiesService, ModulesService, UsersService, AssessmentsService, AssessmentSubmissionsService } from '@/app/core/services';
 
 @Component({
   selector: 'app-instructor-grades',
@@ -24,6 +24,12 @@ export class InstructorGradesComponent implements OnInit {
   loading = false;
   error: string | null = null;
 
+  showModal = false;
+  modalActivity: any = null;
+  modalAssessments: any[] = [];
+  modalSubmissions: any[] = [];
+  modalGrades: any[] = [];
+
   constructor(private route: ActivatedRoute) {}
 
   async ngOnInit() {
@@ -34,10 +40,7 @@ export class InstructorGradesComponent implements OnInit {
 
     await this.loadModules();
     await this.loadActivities();
-    
-    if (this.selectedActivity) {
-      await this.loadGrades();
-    }
+    if (this.selectedActivity) await this.loadGrades();
   }
 
   async loadModules() {
@@ -163,6 +166,55 @@ export class InstructorGradesComponent implements OnInit {
   getHighestScore(): string {
     if (this.grades.length === 0) return '0';
     return Math.max(...this.grades.map(g => g.score)).toString();
+  }
+
+  getActivitiesByModule(moduleId: number | null): any[] {
+    if (!moduleId) return this.activities;
+    return this.activities.filter(a => a.moduleId === moduleId);
+  }
+
+  getModuleTitleForActivity(activity: any): string {
+    const m = this.modules.find(mod => mod.id === activity?.moduleId);
+    return m?.title || '—';
+  }
+
+  async openActivityModal(activity: any) {
+    this.modalActivity = activity;
+    this.showModal = true;
+    this.loading = true;
+    this.error = null;
+    try {
+      const [assessmentsRes, gradesRes] = await Promise.all([
+        AssessmentsService.getByLabActivity(activity.id),
+        GradesService.listForActivity(activity.id),
+      ]);
+      this.modalAssessments = assessmentsRes?.data || [];
+      this.modalGrades = gradesRes?.data || [];
+      const submissionsArrays = await Promise.all(
+        this.modalAssessments.map((a: any) => AssessmentSubmissionsService.getByAssessment(a.id))
+      );
+      this.modalSubmissions = submissionsArrays.flatMap((r: any) => r?.data || []);
+    } catch (e) {
+      this.error = 'Failed to load activity data';
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.modalActivity = null;
+    this.modalAssessments = [];
+    this.modalSubmissions = [];
+    this.modalGrades = [];
+  }
+
+  getSubmissionByUserAndAssessment(userId: number, assessmentId: number): any | null {
+    return this.modalSubmissions.find(s => s.userId === userId && s.assessmentId === assessmentId) || null;
+  }
+
+  getGradeForUser(userId: number): any | null {
+    return this.modalGrades.find(g => g.userId === userId) || null;
   }
 }
 
